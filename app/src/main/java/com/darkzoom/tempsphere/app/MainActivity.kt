@@ -1,4 +1,4 @@
-package com.darkzoom.tempsphere
+package com.darkzoom.tempsphere.app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Greeting(name: String, modifier: Modifier = Modifier)                                  {
     Text(
         text = "Hello $name!",
         modifier = modifier
