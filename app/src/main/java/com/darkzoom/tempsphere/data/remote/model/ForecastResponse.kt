@@ -3,7 +3,7 @@ package com.darkzoom.tempsphere.data.remote.model
 import com.google.gson.annotations.SerializedName
 
 data class ForecastResponse(
-    val cod: String,
+    val code: String,
     val message: Int,
     val cnt: Int,
     val list: List<ForecastItem>,
