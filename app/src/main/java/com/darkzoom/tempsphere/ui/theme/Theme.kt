@@ -1,6 +1,5 @@
 package com.darkzoom.tempsphere.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -24,7 +23,7 @@ private val DarkColorScheme = darkColorScheme(
     secondary = DarkSecondary,
     onSecondary = DarkSecondaryForeground,
     error = DarkDestructive,
-    onError = DarkDestructiveForeground,
+    errorContainer = DarkDestructiveContainer,
     surfaceVariant = DarkMuted,
     onSurfaceVariant = DarkMutedForeground,
     outline = DarkBorder
@@ -40,16 +39,21 @@ private val LightColorScheme = lightColorScheme(
     secondary = LightSecondary,
     onSecondary = LightSecondaryForeground,
     error = LightDestructive,
-    onError = LightDestructiveForeground,
+    errorContainer = LightDestructiveContainer,
     surfaceVariant = LightMuted,
     onSurfaceVariant = LightMutedForeground,
     outline = LightBorder
 )
 
 data class ExtendedColors(
-    val chart1: Color, val chart2: Color, val chart3: Color, val chart4: Color, val chart5: Color,
-    val sidebar: Color, val sidebarForeground: Color, val sidebarPrimary: Color,
-    val sidebarPrimaryForeground: Color, val sidebarAccent: Color, val sidebarAccentForeground: Color
+    val emerald: Color,
+    val pink: Color,
+    val blue: Color,
+    val purple: Color,
+    val lightPurple: Color,
+    val orange: Color,
+    val gradientStart: Color,
+    val gradientEnd: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf<ExtendedColors> {
@@ -59,7 +63,7 @@ val LocalExtendedColors = staticCompositionLocalOf<ExtendedColors> {
 @Composable
 fun TempSphereTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false, // Set to false to force your custom CSS colors over Android's wallpaper colors
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -71,19 +75,16 @@ fun TempSphereTheme(
         else -> LightColorScheme
     }
 
-    val extendedColors = if (darkTheme) {
-        ExtendedColors(
-            chart1 = DarkChart1, chart2 = DarkChart2, chart3 = DarkChart3, chart4 = DarkChart4, chart5 = DarkChart5,
-            sidebar = DarkSidebar, sidebarForeground = DarkSidebarForeground, sidebarPrimary = DarkSidebarPrimary,
-            sidebarPrimaryForeground = DarkSidebarPrimaryForeground, sidebarAccent = DarkSidebarAccent, sidebarAccentForeground = DarkSidebarAccentForeground
-        )
-    } else {
-        ExtendedColors(
-            chart1 = LightChart1, chart2 = LightChart2, chart3 = LightChart3, chart4 = LightChart4, chart5 = LightChart5,
-            sidebar = LightSidebar, sidebarForeground = LightSidebarForeground, sidebarPrimary = LightSidebarPrimary,
-            sidebarPrimaryForeground = LightSidebarPrimaryForeground, sidebarAccent = LightSidebarAccent, sidebarAccentForeground = LightSidebarAccentForeground
-        )
-    }
+    val extendedColors = ExtendedColors(
+        emerald = AccentEmerald,
+        pink = AccentPink,
+        blue = AccentBlue,
+        purple = AccentPurple,
+        lightPurple = AccentLightPurple,
+        orange = AccentOrange,
+        gradientStart = GradientPurple,
+        gradientEnd = GradientIndigo
+    )
 
     CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
         MaterialTheme(
