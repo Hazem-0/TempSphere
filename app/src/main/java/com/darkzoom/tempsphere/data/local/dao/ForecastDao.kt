@@ -13,19 +13,15 @@ interface ForecastDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertForecastItems(items: List<ForecastItemEntity>)
 
-    @Query("""SELECT * FROM forecast_items
-        WHERE cityLat = :lat AND cityLon = :lon AND units = :units AND lang = :lang
-        ORDER BY dt ASC """)
-    fun getForecast(
-        lat: Double,
-        lon: Double,
-        units: String,
-        lang: String
-    ): Flow<List<ForecastItemEntity>>
+    @Query("SELECT * FROM forecast_items ORDER BY dt ASC")
+    fun getForecast(): Flow<List<ForecastItemEntity>>
 
     @Query("""DELETE FROM forecast_items
         WHERE cityLat = :lat AND cityLon = :lon AND units = :units AND lang = :lang""")
     suspend fun deleteForecast(lat: Double, lon: Double, units: String, lang: String)
 
+
+    @Query("DELETE FROM forecast_items")
+    suspend fun deleteAllForecast()
 
 }

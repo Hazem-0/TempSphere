@@ -2,13 +2,12 @@ package com.darkzoom.tempsphere.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val AccentEmerald = Color(0xFF34D399)
-val AccentPink = Color(0xFFF472B6)
-val AccentBlue = Color(0xFF60A5FA)
-val AccentPurple = Color(0xFFA78BFA)
-val AccentLightPurple = Color(0xFFC4B5FD)
-val AccentOrange = Color(0xFFFB923C)
-
+val AccentEmerald = Color(0xFF4ADE9B)
+val AccentPink    = Color(0xFFF0719B)
+val AccentBlue    = Color(0xFF5A9DFF)
+val AccentPurple  = Color(0xFFA084E8)
+val AccentLightPurple = Color(0xFFE2C2FF)
+val AccentOrange  = Color(0xFFFB923C)
 val GradientPurple = Color(0xFF7C3AED)
 val GradientIndigo = Color(0xFF4F46E5)
 
@@ -21,7 +20,7 @@ val DarkSecondaryForeground = Color(0xFFFFFFFF)
 val DarkMuted = Color.White.copy(alpha = 0.06f)
 val DarkMutedForeground = Color.White.copy(alpha = 0.45f)
 val DarkAccent = Color.White.copy(alpha = 0.03f)
-val DarkDestructive = Color(0xFFF87171)
+val DarkDestructive = Color(0xFFFF5252)
 val DarkDestructiveContainer = Color(0xFFEF4444).copy(alpha = 0.1f)
 val DarkBorder = Color.White.copy(alpha = 0.12f)
 
