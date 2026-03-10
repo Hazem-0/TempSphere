@@ -13,11 +13,11 @@ properties.load(project.rootProject.file("local.properties").inputStream())
 val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
 
 android {
-    namespace = "com.darkzoom.androidwithkotlin"
+    namespace = "com.darkzoom.tempsphere"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.darkzoom.androidwithkotlin"
+        applicationId = "com.darkzoom.tempsphere"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -87,4 +87,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation("androidx.compose.material:material-icons-extended")}
+    implementation(libs.androidx.compose.material.icons.extended)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+}
