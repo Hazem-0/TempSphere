@@ -21,28 +21,26 @@ import com.darkzoom.tempsphere.data.remote.model.ForecastTab
 import com.darkzoom.tempsphere.data.remote.model.HomeUiState
 import com.darkzoom.tempsphere.ui.home.components.*
 import com.darkzoom.tempsphere.ui.theme.AccentPurple
-
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // The VIEW is dumb. It just opens the Android permission box.
+    val context = LocalContext.current
+
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) {
-        // Tell the ViewModel to run logic now that we might have permission
-        viewModel.loadWeather()
+        viewModel.loadWeather(context)
     }
 
-    // Ask on first launch
     LaunchedEffect(Unit) {
         permissionLauncher.launch(
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         )
     }
 
-    // Ask on pull-to-refresh
     val onUserRefresh = {
         permissionLauncher.launch(
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)

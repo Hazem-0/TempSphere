@@ -3,6 +3,13 @@ package com.darkzoom.tempsphere.utils
 import com.darkzoom.tempsphere.data.local.entity.CurrentWeatherEntity
 import com.darkzoom.tempsphere.data.local.entity.ForecastItemEntity
 import com.darkzoom.tempsphere.data.remote.model.*
+import com.darkzoom.tempsphere.data.remote.model.DailyWeather
+import com.darkzoom.tempsphere.data.remote.model.HomeUiState
+import com.darkzoom.tempsphere.data.remote.model.HourlyWeather
+import com.darkzoom.tempsphere.data.remote.model.WeatherType
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 fun CurrentWeatherResponse.toEntity(units: String, lang: String): CurrentWeatherEntity {
@@ -99,3 +106,59 @@ fun ForecastResponse.toEntities(units: String, lang: String): List<ForecastItemE
     return entityList
 }
 
+
+ fun CurrentWeatherEntity.toSuccess(forecast: List<ForecastItemEntity>) =
+    HomeUiState.Success(
+        city          = cityName,
+        temp         = temp.toInt(),
+        feelsLike    = feelsLike.toInt(),
+        high         = tempMax.toInt(),
+        low          = tempMin.toInt(),
+        description   = weatherDescription.replaceFirstChar { it.uppercase() },
+        weatherType   = weatherIcon.toWeatherType(),
+        humidity      = humidity,
+        windMs        = windSpeed.toFloat(),
+        pressureHpa   = pressure,
+        cloudinessPct = cloudsAll,
+        dateLabel     = dt.toDateLabel(),
+        hourly        = forecast.take(10).map { it.toHourly() },
+        daily         = forecast.groupBy { it.dt.toDayLabel() }.values.take(7).map { it.toDaily() }
+    )
+
+ fun ForecastItemEntity.toHourly() = HourlyWeather(
+    time      = dt.toHourLabel(),
+    tempF     = temp.toInt(),
+    type      = weatherIcon.toWeatherType(),
+    precipPct = (pop * 100).toInt()
+)
+
+ fun List<ForecastItemEntity>.toDaily() = DailyWeather(
+    day       = first().dt.toDayLabel(),
+    high     = maxOf { it.tempMax }.toInt(),
+    low      = minOf { it.tempMin }.toInt(),
+    type      = first().weatherIcon.toWeatherType(),
+    precipPct = (maxOf { it.pop } * 100).toInt()
+)
+
+ fun String.toWeatherType(): WeatherType {
+    val isDay = this.endsWith('d')
+    return when (this.take(2)) {
+        "01" -> if (isDay) WeatherType.SUNNY else WeatherType.NIGHT
+        "02" -> if (isDay) WeatherType.PARTLY_CLOUDY else WeatherType.NIGHT
+        "03", "04" -> WeatherType.CLOUDY
+        "09", "10" -> WeatherType.RAINY
+        "11" -> WeatherType.THUNDER
+        "13" -> WeatherType.SNOWY
+        "50" -> WeatherType.FOGGY
+        else -> WeatherType.CLOUDY
+    }
+}
+
+ fun Long.toDateLabel() =
+    SimpleDateFormat("EEE, MMM d · h:mm a", Locale.getDefault()).format(Date(this * 1000))
+
+ fun Long.toHourLabel() =
+    SimpleDateFormat("h a", Locale.getDefault()).format(Date(this * 1000))
+
+ fun Long.toDayLabel() =
+    SimpleDateFormat("EEE", Locale.getDefault()).format(Date(this * 1000))

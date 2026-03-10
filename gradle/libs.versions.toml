@@ -10,6 +10,7 @@ kotlinxCoroutinesCore = "1.10.2"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.9.3"
 composeBom = "2026.02.01"
+lifecycleViewmodelCompose = "2.7.0"
 workVersion = "2.11.1"
 playServicesLocation = "21.3.0"
 retrofit = "3.0.0"
@@ -18,9 +19,11 @@ roomVersion = "2.8.4"
 ksp = "2.3.6"
 coil = "2.7.0"
 okhttp3 = "4.12.0"
-room = "2.6.1"
+
 [libraries]
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
