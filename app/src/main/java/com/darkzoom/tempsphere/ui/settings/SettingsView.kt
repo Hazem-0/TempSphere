@@ -7,31 +7,39 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.settings.components.ExpandableRow
 import com.darkzoom.tempsphere.ui.settings.components.GlassSection
 import com.darkzoom.tempsphere.ui.settings.components.GlassToggle
 import com.darkzoom.tempsphere.ui.settings.components.SettingsRow
 import com.darkzoom.tempsphere.ui.theme.TempSphereExtendedTheme
-import com.darkzoom.tempsphere.ui.theme.TempSphereTheme
 
 @Composable
-fun SettingsScreen() {
-    var locationMode by remember { mutableStateOf("GPS") }
-    var tempUnit by remember { mutableStateOf("Fahrenheit") }
-    var windUnit by remember { mutableStateOf("m/s") }
-    var language by remember { mutableStateOf("English") }
-    var theme by remember { mutableStateOf("Starry Night") }
-    var notifications by remember { mutableStateOf(true) }
-    var dataRefresh by remember { mutableStateOf("30 min") }
+fun SettingsScreen(viewModel: SettingsViewModel) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    when (val currentState = uiState) {
+        is SettingsUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(color = Color(0xFFA78BFA))
+            }
+        }
+        is SettingsUiState.Success -> {
+            SettingsContent(state = currentState, viewModel = viewModel)
+        }
+    }
+}
+
+@Composable
+private fun SettingsContent(state: SettingsUiState.Success, viewModel: SettingsViewModel) {
     var openRow by remember { mutableStateOf<String?>(null) }
 
     fun toggleRow(row: String) {
@@ -41,6 +49,8 @@ fun SettingsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+
+            .statusBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(bottom = 32.dp)
     ) {
@@ -66,12 +76,12 @@ fun SettingsScreen() {
 
             GlassSection(title = stringResource(R.string.location)) {
                 ExpandableRow(
-                    icon = if (locationMode == "GPS") Icons.Rounded.LocationOn else Icons.Rounded.Map,
+                    icon = if (state.locationMode == "GPS") Icons.Rounded.LocationOn else Icons.Rounded.Map,
                     iconColor = TempSphereExtendedTheme.colors.emerald,
                     label = stringResource(R.string.location_method),
-                    selected = locationMode,
+                    selected = state.locationMode,
                     options = listOf("GPS", stringResource(R.string.map_selection)),
-                    onSelect = { locationMode = it },
+                    onSelect = { viewModel.updateLocationMode(it) },
                     accentColor = TempSphereExtendedTheme.colors.emerald,
                     isOpen = openRow == "location",
                     onToggle = { toggleRow("location") },
@@ -84,9 +94,9 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Thermostat,
                     iconColor = TempSphereExtendedTheme.colors.pink,
                     label = stringResource(R.string.temperature),
-                    selected = tempUnit,
+                    selected = state.tempUnit,
                     options = listOf("Celsius", "Fahrenheit", "Kelvin"),
-                    onSelect = { tempUnit = it },
+                    onSelect = { viewModel.updateTempUnit(it) },
                     accentColor = TempSphereExtendedTheme.colors.pink,
                     isOpen = openRow == "temp",
                     onToggle = { toggleRow("temp") }
@@ -95,9 +105,9 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Air,
                     iconColor = TempSphereExtendedTheme.colors.blue,
                     label = stringResource(R.string.wind_speed),
-                    selected = windUnit,
+                    selected = state.windUnit,
                     options = listOf("m/s", "km/h", "mph"),
-                    onSelect = { windUnit = it },
+                    onSelect = { viewModel.updateWindUnit(it) },
                     accentColor = TempSphereExtendedTheme.colors.blue,
                     isOpen = openRow == "wind",
                     onToggle = { toggleRow("wind") },
@@ -110,9 +120,9 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Language,
                     iconColor = TempSphereExtendedTheme.colors.purple,
                     label = stringResource(R.string.language),
-                    selected = language,
+                    selected = state.language,
                     options = listOf("English", "Arabic"),
-                    onSelect = { language = it },
+                    onSelect = { viewModel.updateLanguage(it) },
                     accentColor = TempSphereExtendedTheme.colors.purple,
                     isOpen = openRow == "language",
                     onToggle = { toggleRow("language") }
@@ -121,9 +131,9 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Nightlight,
                     iconColor = TempSphereExtendedTheme.colors.lightPurple,
                     label = stringResource(R.string.theme),
-                    selected = theme,
+                    selected = state.theme,
                     options = listOf("Dark", "Light"),
-                    onSelect = { theme = it },
+                    onSelect = { viewModel.updateTheme(it) },
                     accentColor = TempSphereExtendedTheme.colors.lightPurple,
                     isOpen = openRow == "theme",
                     onToggle = { toggleRow("theme") },
@@ -136,12 +146,11 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Notifications,
                     iconColor = TempSphereExtendedTheme.colors.orange,
                     label = stringResource(R.string.push_notifications),
-                    value = if (notifications) stringResource(R.string.enabled)
-                    else stringResource(R.string.disabled),
+                    value = if (state.notifications) stringResource(R.string.enabled) else stringResource(R.string.disabled),
                     rightEl = {
                         GlassToggle(
-                            enabled = notifications,
-                            onToggle = { notifications = !notifications },
+                            enabled = state.notifications,
+                            onToggle = { viewModel.toggleNotifications() },
                             color = TempSphereExtendedTheme.colors.orange
                         )
                     }
@@ -150,9 +159,9 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Security,
                     iconColor = TempSphereExtendedTheme.colors.emerald,
                     label = stringResource(R.string.data_refresh_rate),
-                    selected = dataRefresh,
+                    selected = state.dataRefresh,
                     options = listOf("10 min", "15 min", "30 min", "1 hour"),
-                    onSelect = { dataRefresh = it },
+                    onSelect = { viewModel.updateDataRefresh(it) },
                     accentColor = TempSphereExtendedTheme.colors.emerald,
                     isOpen = openRow == "refresh",
                     onToggle = { toggleRow("refresh") },
@@ -160,21 +169,5 @@ fun SettingsScreen() {
                 )
             }
         }
-    }
-}
-
-@Preview(name = "Dark Mode", showSystemUi = true)
-@Composable
-fun SettingsScreenDarkPreview() {
-    TempSphereTheme(darkTheme = true) {
-        SettingsScreen()
-    }
-}
-
-@Preview(name = "Light Mode", showSystemUi = true)
-@Composable
-fun SettingsScreenLightPreview() {
-    TempSphereTheme(darkTheme = false) {
-        SettingsScreen()
     }
 }

@@ -7,10 +7,17 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.darkzoom.tempsphere.ui.core.Theme.AfternoonColors
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.core.Theme.MorningColors
@@ -18,8 +25,13 @@ import com.darkzoom.tempsphere.ui.core.Theme.NightColors
 import com.darkzoom.tempsphere.ui.common.components.AfterNoonBackground
 import com.darkzoom.tempsphere.ui.common.components.MorningBackground
 import com.darkzoom.tempsphere.ui.common.components.NightBackground
+import com.darkzoom.tempsphere.ui.core.components.Screen
 import com.darkzoom.tempsphere.ui.home.HomeScreen
 import com.darkzoom.tempsphere.ui.home.HomeViewModel
+import com.darkzoom.tempsphere.ui.navigation.BottomNavBar
+import com.darkzoom.tempsphere.ui.settings.SettingsScreen
+import com.darkzoom.tempsphere.ui.settings.SettingsViewModel
+import com.darkzoom.tempsphere.ui.settings.SettingsViewModelFactory
 import com.darkzoom.tempsphere.ui.theme.TempSphereTheme
 import java.util.Calendar
 
@@ -35,9 +47,12 @@ class MainActivity : ComponentActivity() {
         val appContainer = application as App
         val repository = appContainer.repository
         val locationTracker = appContainer.locationTracker
+        val settingsRepository = appContainer.settingsRepository
 
         setContent {
             val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            val context = LocalContext.current
+            val navController = rememberNavController()
 
             val appTheme = when (currentHour) {
                 in 6..11 -> MorningColors
@@ -48,13 +63,6 @@ class MainActivity : ComponentActivity() {
             TempSphereTheme(darkTheme = true) {
                 CompositionLocalProvider(LocalAppTheme provides appTheme) {
 
-                    val viewModel: HomeViewModel = viewModel(
-                        factory = HomeViewModel.Factory(
-                            repository = repository,
-                            locationTracker = locationTracker
-                        )
-                    )
-
                     Box(modifier = Modifier.fillMaxSize()) {
                         when (currentHour) {
                             in 6..11 -> MorningBackground()
@@ -62,7 +70,38 @@ class MainActivity : ComponentActivity() {
                             else -> NightBackground()
                         }
 
-                        HomeScreen(viewModel = viewModel)
+                        Scaffold(
+                            bottomBar = { BottomNavBar(navController = navController) },
+                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                            // FIX: Override default insets so Scaffold doesn't push the top down
+                            contentWindowInsets = WindowInsets(0, 0, 0, 0)
+                        ) { paddingValues ->
+
+                            NavHost(
+                                navController = navController,
+                                startDestination = Screen.Home.route,
+                                // paddingValues now ONLY contains the height of the BottomNavBar
+                                modifier = Modifier.padding(paddingValues)
+                            ) {
+                                composable(Screen.Home.route) {
+                                    val homeViewModel: HomeViewModel = viewModel(
+                                        factory = HomeViewModel.Factory(
+                                            repository = repository,
+                                            locationTracker = locationTracker,
+                                            settingsRepository = settingsRepository
+                                        )
+                                    )
+                                    HomeScreen(viewModel = homeViewModel)
+                                }
+
+                                composable(Screen.Settings.route) {
+                                    val settingsViewModel: SettingsViewModel = viewModel(
+                                        factory = SettingsViewModelFactory(context)
+                                    )
+                                    SettingsScreen(viewModel = settingsViewModel)
+                                }
+                            }
+                        }
                     }
                 }
             }
