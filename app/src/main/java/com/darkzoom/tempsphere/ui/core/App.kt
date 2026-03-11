@@ -3,9 +3,11 @@ package com.darkzoom.tempsphere.ui.core
 import android.app.Application
 import com.darkzoom.tempsphere.data.local.database.WeatherDatabase
 import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
+import com.darkzoom.tempsphere.data.remote.datasource.SharedPrefDatasource
 import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
+import com.darkzoom.tempsphere.data.repository.SettingsRepository
 import com.darkzoom.tempsphere.data.repository.WeatherRepository
-import com.darkzoom.tempsphere.utils.LocationUtil // <-- Correctly imported from utils!
+import com.darkzoom.tempsphere.utils.LocationUtil
 import com.google.android.gms.location.LocationServices
 
 class App : Application() {
@@ -30,5 +32,13 @@ class App : Application() {
 
     val repository by lazy {
         WeatherRepository(remoteDatasource, localDatasource)
+    }
+
+    private val sharedPrefDatasource by lazy {
+        SharedPrefDatasource.getInstance(this)
+    }
+
+    val settingsRepository by lazy {
+        SettingsRepository.getInstance(sharedPrefDatasource)
     }
 }
