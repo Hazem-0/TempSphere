@@ -4,7 +4,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.darkzoom.androidwithkotlin.BuildConfig
+import com.darkzoom.tempsphere.BuildConfig
 object RetrofitClient {
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {

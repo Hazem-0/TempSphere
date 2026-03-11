@@ -1,22 +1,20 @@
 package com.darkzoom.tempsphere.ui.settings
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.darkzoom.androidwithkotlin.R
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.settings.components.ExpandableRow
 import com.darkzoom.tempsphere.ui.settings.components.GlassSection
 import com.darkzoom.tempsphere.ui.settings.components.GlassToggle
@@ -43,21 +41,20 @@ fun SettingsScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(bottom = 32.dp)
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
             Text(
                 text = "Settings",
-                color = MaterialTheme.colorScheme.onBackground,
+                color = Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = (-0.5).sp
             )
             Text(
                 text = stringResource(R.string.customize_your_experience),
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+                color = Color.White.copy(alpha = 0.5f),
                 fontSize = 13.sp,
                 modifier = Modifier.padding(top = 2.dp)
             )
@@ -92,7 +89,8 @@ fun SettingsScreen() {
                     onSelect = { tempUnit = it },
                     accentColor = TempSphereExtendedTheme.colors.pink,
                     isOpen = openRow == "temp",
-                    onToggle = { toggleRow("temp") })
+                    onToggle = { toggleRow("temp") }
+                )
                 ExpandableRow(
                     icon = Icons.Rounded.Air,
                     iconColor = TempSphereExtendedTheme.colors.blue,
@@ -117,7 +115,8 @@ fun SettingsScreen() {
                     onSelect = { language = it },
                     accentColor = TempSphereExtendedTheme.colors.purple,
                     isOpen = openRow == "language",
-                    onToggle = { toggleRow("language") })
+                    onToggle = { toggleRow("language") }
+                )
                 ExpandableRow(
                     icon = Icons.Rounded.Nightlight,
                     iconColor = TempSphereExtendedTheme.colors.lightPurple,
@@ -137,16 +136,16 @@ fun SettingsScreen() {
                     icon = Icons.Rounded.Notifications,
                     iconColor = TempSphereExtendedTheme.colors.orange,
                     label = stringResource(R.string.push_notifications),
-                    value = if (notifications) stringResource(R.string.enabled) else stringResource(
-                        R.string.disabled
-                    ),
+                    value = if (notifications) stringResource(R.string.enabled)
+                    else stringResource(R.string.disabled),
                     rightEl = {
                         GlassToggle(
                             enabled = notifications,
                             onToggle = { notifications = !notifications },
                             color = TempSphereExtendedTheme.colors.orange
                         )
-                    })
+                    }
+                )
                 ExpandableRow(
                     icon = Icons.Rounded.Security,
                     iconColor = TempSphereExtendedTheme.colors.emerald,
@@ -160,12 +159,9 @@ fun SettingsScreen() {
                     isLast = true
                 )
             }
-
-
         }
     }
 }
-
 
 @Preview(name = "Dark Mode", showSystemUi = true)
 @Composable

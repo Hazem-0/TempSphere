@@ -12,17 +12,24 @@ class WeatherLocalDatasource(
 ) {
 
 
+
     suspend fun cacheCurrentWeather(entity: CurrentWeatherEntity) {
         currentWeatherDao.insertCurrentWeather(entity)
     }
 
-    fun getCurrentWeather(
-        lat: Double, lon: Double, units: String, lang: String
-    ): Flow<CurrentWeatherEntity?> =
-        currentWeatherDao.getCurrentWeather(lat, lon, units, lang)
+    fun getCurrentWeather(): Flow<CurrentWeatherEntity?> =
+        currentWeatherDao.getCurrentWeather()
 
     suspend fun clearCurrentWeather(lat: Double, lon: Double, units: String, lang: String) {
         currentWeatherDao.deleteCurrentWeather(lat, lon, units, lang)
+    }
+
+    suspend fun clearAllCurrentWeather() {
+        currentWeatherDao.deleteAllCurrentWeather()
+    }
+
+    suspend fun clearAllForecast() {
+        forecastDao.deleteAllForecast()
     }
 
 
@@ -30,12 +37,11 @@ class WeatherLocalDatasource(
         forecastDao.insertForecastItems(items)
     }
 
-    fun getForecast(
-        lat: Double, lon: Double, units: String, lang: String
-    ): Flow<List<ForecastItemEntity>> =
-        forecastDao.getForecast(lat, lon, units, lang)
+    fun getForecast(): Flow<List<ForecastItemEntity>> =
+        forecastDao.getForecast()
 
     suspend fun clearForecast(lat: Double, lon: Double, units: String, lang: String) {
         forecastDao.deleteForecast(lat, lon, units, lang)
     }
+
 }

@@ -15,4 +15,8 @@
     <string name="language">Language</string>
     <string name="enabled">Enabled</string>
     <string name="disabled">Disabled</string>
+    <string name="hourly">Hourly</string>
+    <string name="days">Days</string>
+    <string name="location_permission_required_or_gps_disabled">Location permission required or GPS disabled.</string>
+    <string name="failed_to_fetch_weather">Failed to fetch weather</string>
 </resources>
