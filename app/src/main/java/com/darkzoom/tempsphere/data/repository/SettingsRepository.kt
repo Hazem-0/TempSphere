@@ -1,8 +1,8 @@
 package com.darkzoom.tempsphere.data.repository
 
-import com.darkzoom.tempsphere.data.remote.datasource.SharedPrefDatasource
+import com.darkzoom.tempsphere.data.contract.SharedPrefDatasource
 
-class SettingsRepository private constructor(private val sharedPrefs: SharedPrefDatasource) {
+class SettingsRepository(val sharedPrefs: SharedPrefDatasource) {
 
     companion object {
         const val KEY_LOCATION_MODE = "location_mode"
