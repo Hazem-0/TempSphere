@@ -20,6 +20,10 @@ ksp = "2.3.6"
 coil = "2.7.0"
 okhttp3 = "4.12.0"
 navigation = "2.7.7"
+mocck= "1.13.17"
+junitJunit = "4.12"
+
+
 [libraries]
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +56,10 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3" }
 navigation-compose ={group = "androidx.navigation" , name="navigation-compose", version.ref = "navigation"}
+mocck= { group = "io.mockk", name = "mockk-android", version.ref = "mocck" }
+mocck-agent= { group = "io.mockk", name = "mockk-agent", version.ref = "mocck"}
+junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

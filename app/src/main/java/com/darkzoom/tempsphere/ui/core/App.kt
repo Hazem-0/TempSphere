@@ -1,9 +1,11 @@
 package com.darkzoom.tempsphere.ui.core
 
 import android.app.Application
+import android.content.Context
+import com.darkzoom.tempsphere.data.contract.SharedPrefDatasource
 import com.darkzoom.tempsphere.data.local.database.WeatherDatabase
+import com.darkzoom.tempsphere.data.local.datasource.SharedPrefDatasourceImp
 import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
-import com.darkzoom.tempsphere.data.remote.datasource.SharedPrefDatasource
 import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.data.repository.SettingsRepository
 import com.darkzoom.tempsphere.data.repository.WeatherRepository
@@ -34,8 +36,9 @@ class App : Application() {
         WeatherRepository(remoteDatasource, localDatasource)
     }
 
-    private val sharedPrefDatasource by lazy {
-        SharedPrefDatasource.getInstance(this)
+    private val sharedPrefDatasource: SharedPrefDatasource by lazy {
+        val prefs = getSharedPreferences("tempsphere_preferences", Context.MODE_PRIVATE)
+        SharedPrefDatasourceImp(prefs)
     }
 
     val settingsRepository by lazy {
