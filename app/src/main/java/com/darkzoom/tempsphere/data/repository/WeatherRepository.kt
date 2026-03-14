@@ -1,10 +1,10 @@
 package com.darkzoom.tempsphere.data.repository
 
-import android.util.Log
+import CurrentWeatherEntity
+import ForecastItemEntity
 import com.darkzoom.tempsphere.BuildConfig
 import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
-import com.darkzoom.tempsphere.data.local.entity.CurrentWeatherEntity
-import com.darkzoom.tempsphere.data.local.entity.ForecastItemEntity
+
 import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.utils.toEntities
 import com.darkzoom.tempsphere.utils.toEntity

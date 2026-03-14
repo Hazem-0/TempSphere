@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
-import com.darkzoom.tempsphere.data.remote.model.ForecastTab
+import com.darkzoom.tempsphere.data.local.model.ForecastTab
 
 @Composable
 fun ForecastTabs(

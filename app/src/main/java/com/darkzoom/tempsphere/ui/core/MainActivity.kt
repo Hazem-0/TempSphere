@@ -26,6 +26,8 @@ import com.darkzoom.tempsphere.ui.common.components.AfterNoonBackground
 import com.darkzoom.tempsphere.ui.common.components.MorningBackground
 import com.darkzoom.tempsphere.ui.common.components.NightBackground
 import com.darkzoom.tempsphere.ui.core.components.Screen
+import com.darkzoom.tempsphere.ui.alert.AlertsScreen
+import com.darkzoom.tempsphere.ui.alert.AlertViewModel
 import com.darkzoom.tempsphere.ui.home.HomeScreen
 import com.darkzoom.tempsphere.ui.home.HomeViewModel
 import com.darkzoom.tempsphere.ui.navigation.BottomNavBar
@@ -40,24 +42,25 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
+            statusBarStyle     = SystemBarStyle.dark(Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
-        val appContainer = application as App
-        val repository = appContainer.repository
-        val locationTracker = appContainer.locationTracker
-        val settingsRepository = appContainer.settingsRepository
+        val app               = application as App
+        val repository        = app.repository
+        val locationTracker   = app.locationTracker
+        val settingsRepository = app.settingsRepository
+        val alertRepository   = app.alertRepository
 
         setContent {
-            val currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-            val context = LocalContext.current
+            val currentHour  = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+            val context      = LocalContext.current
             val navController = rememberNavController()
 
             val appTheme = when (currentHour) {
-                in 6..11 -> MorningColors
+                in 6..11  -> MorningColors
                 in 12..17 -> AfternoonColors
-                else -> NightColors
+                else      -> NightColors
             }
 
             TempSphereTheme(darkTheme = true) {
@@ -65,33 +68,38 @@ class MainActivity : ComponentActivity() {
 
                     Box(modifier = Modifier.fillMaxSize()) {
                         when (currentHour) {
-                            in 6..11 -> MorningBackground()
+                            in 6..11  -> MorningBackground()
                             in 12..17 -> AfterNoonBackground()
-                            else -> NightBackground()
+                            else      -> NightBackground()
                         }
 
                         Scaffold(
-                            bottomBar = { BottomNavBar(navController = navController) },
-                            containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                            // FIX: Override default insets so Scaffold doesn't push the top down
+                            bottomBar        = { BottomNavBar(navController = navController) },
+                            containerColor   = androidx.compose.ui.graphics.Color.Transparent,
                             contentWindowInsets = WindowInsets(0, 0, 0, 0)
                         ) { paddingValues ->
 
                             NavHost(
-                                navController = navController,
+                                navController    = navController,
                                 startDestination = Screen.Home.route,
-                                // paddingValues now ONLY contains the height of the BottomNavBar
-                                modifier = Modifier.padding(paddingValues)
+                                modifier         = Modifier.padding(paddingValues)
                             ) {
                                 composable(Screen.Home.route) {
                                     val homeViewModel: HomeViewModel = viewModel(
                                         factory = HomeViewModel.Factory(
-                                            repository = repository,
-                                            locationTracker = locationTracker,
+                                            repository        = repository,
+                                            locationTracker   = locationTracker,
                                             settingsRepository = settingsRepository
                                         )
                                     )
                                     HomeScreen(viewModel = homeViewModel)
+                                }
+
+                                composable(Screen.Alerts.route) {
+                                    val alertViewModel: AlertViewModel = viewModel(
+                                        factory = AlertViewModel.Factory(alertRepository)
+                                    )
+                                    AlertsScreen(viewModel = alertViewModel)
                                 }
 
                                 composable(Screen.Settings.route) {

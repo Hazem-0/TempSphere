@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.common.components.GlassCard
-import com.darkzoom.tempsphere.data.remote.model.DailyWeather
-import com.darkzoom.tempsphere.data.remote.model.ForecastTab
-import com.darkzoom.tempsphere.data.remote.model.HourlyWeather
+import com.darkzoom.tempsphere.data.local.model.DailyWeather
+import com.darkzoom.tempsphere.data.local.model.ForecastTab
+import com.darkzoom.tempsphere.data.local.model.HourlyWeather
 
 @Composable
 fun GlassSection(

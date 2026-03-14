@@ -9,7 +9,7 @@
     <string name="temperature">Temperature</string>
     <string name="wind_speed">Wind Speed</string>
     <string name="appearance_language"><![CDATA[Appearance & Language]]></string>
-    <string name="data_notifications"><![CDATA[Data & Notifications]]></string>
+    <string name="data_refresh"><![CDATA[Refresh Rate]]></string>
     <string name="push_notifications">Push Notifications</string>
     <string name="theme">Theme</string>
     <string name="language">Language</string>
@@ -19,4 +19,21 @@
     <string name="days">Days</string>
     <string name="location_permission_required_or_gps_disabled">Location permission required or GPS disabled.</string>
     <string name="failed_to_fetch_weather">Failed to fetch weather</string>
+    <string name="select_time">Select Time</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="new_weather_alert">New Weather Alert</string>
+    <string name="close">Close</string>
+    <string name="alert_time">ALERT TIME</string>
+    <string name="time">Time</string>
+    <string name="alert_type">ALERT TYPE</string>
+    <string name="notification">Notification</string>
+    <string name="alarm_sound">Alarm Sound</string>
+    <string name="repeat">REPEAT</string>
+    <string name="save_alert">Save Alert</string>
+    <string name="weather_alarm">⏰ Weather  Alarm</string>
+    <string name="time_to_wake_up_open_tempsphere_for_the_forecast">Time to wake up! Open TempSphere for the forecast.</string>
+    <string name="alarm">⏰ Alarm · %1$s</string>
+    <string name="weather_alerts">Weather Alerts</string>
+    <string name="manage_your_alarms_and_notifications">Manage your alarms and notifications</string>
 </resources>

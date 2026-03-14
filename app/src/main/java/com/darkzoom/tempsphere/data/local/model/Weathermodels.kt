@@ -1,4 +1,4 @@
-package com.darkzoom.tempsphere.data.remote.model
+package com.darkzoom.tempsphere.data.local.model
 
 enum class ForecastTab {
     HOURLY, WEEKLY

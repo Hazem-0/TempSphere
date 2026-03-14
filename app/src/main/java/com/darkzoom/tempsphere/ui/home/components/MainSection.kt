@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.common.components.WeatherIllustration
-import com.darkzoom.tempsphere.data.remote.model.WeatherType
+import com.darkzoom.tempsphere.data.local.model.WeatherType
 
 @Composable
 fun MainSection(

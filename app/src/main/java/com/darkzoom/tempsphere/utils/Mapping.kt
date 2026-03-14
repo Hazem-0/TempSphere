@@ -1,12 +1,16 @@
 package com.darkzoom.tempsphere.utils
 
-import com.darkzoom.tempsphere.data.local.entity.CurrentWeatherEntity
-import com.darkzoom.tempsphere.data.local.entity.ForecastItemEntity
+
+import CurrentWeatherEntity
+import ForecastItemEntity
+import com.darkzoom.tempsphere.data.local.model.entity.AlertEntity
+import com.darkzoom.tempsphere.data.local.model.AlertModel
 import com.darkzoom.tempsphere.data.remote.model.*
-import com.darkzoom.tempsphere.data.remote.model.DailyWeather
-import com.darkzoom.tempsphere.data.remote.model.HomeUiState
-import com.darkzoom.tempsphere.data.remote.model.HourlyWeather
-import com.darkzoom.tempsphere.data.remote.model.WeatherType
+import com.darkzoom.tempsphere.data.local.model.DailyWeather
+import com.darkzoom.tempsphere.data.local.model.HomeUiState
+import com.darkzoom.tempsphere.data.local.model.HourlyWeather
+import com.darkzoom.tempsphere.data.local.model.RepeatMode
+import com.darkzoom.tempsphere.data.local.model.WeatherType
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -140,6 +144,27 @@ fun ForecastResponse.toEntities(units: String, lang: String): List<ForecastItemE
     precipPct = (maxOf { it.pop } * 100).toInt()
 )
 
+
+fun AlertEntity.toDomain(): AlertModel = AlertModel(
+    id         = id,
+    timeText   = timeText,
+    alertType  = alertType,
+    isEnabled  = isEnabled,
+    hour       = hour,
+    minute     = minute,
+    repeatMode = RepeatMode.fromString(repeatMode)
+)
+
+fun AlertModel.toEntity(): AlertEntity = AlertEntity(
+    id         = id,
+    timeText   = timeText,
+    alertType  = alertType,
+    isEnabled  = isEnabled,
+    hour       = hour,
+    minute     = minute,
+    repeatMode = repeatMode.toStorageString()
+)
+
  fun String.toWeatherType(): WeatherType {
     val isDay = this.endsWith('d')
     return when (this.take(2)) {
@@ -162,3 +187,8 @@ fun ForecastResponse.toEntities(units: String, lang: String): List<ForecastItemE
 
  fun Long.toDayLabel() =
     SimpleDateFormat("EEE", Locale.getDefault()).format(Date(this * 1000))
+
+
+ fun String.toApiUnits()   = when (this) { "Celsius" -> "metric"; "Fahrenheit" -> "imperial"; else -> "standard" }
+ fun String.toApiLang()    = when (this) { "Arabic"  -> "ar";     else -> "en" }
+ fun String.toUnitSymbol() = when (this) { "metric"  -> "°C";     "imperial" -> "°F";         else -> " K" }

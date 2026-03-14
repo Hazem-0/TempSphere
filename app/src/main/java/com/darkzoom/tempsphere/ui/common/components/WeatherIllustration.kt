@@ -9,7 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.darkzoom.tempsphere.R
-import com.darkzoom.tempsphere.data.remote.model.WeatherType
+import com.darkzoom.tempsphere.data.local.model.WeatherType
 
 
 @Composable

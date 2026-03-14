@@ -9,8 +9,6 @@ class SettingsRepository(val sharedPrefs: SharedPrefDatasource) {
         const val KEY_TEMP_UNIT = "temp_unit"
         const val KEY_WIND_UNIT = "wind_unit"
         const val KEY_LANGUAGE = "language"
-        const val KEY_THEME = "theme"
-        const val KEY_NOTIFICATIONS = "notifications"
         const val KEY_DATA_REFRESH = "data_refresh"
 
         @Volatile
@@ -39,13 +37,6 @@ class SettingsRepository(val sharedPrefs: SharedPrefDatasource) {
         get() = sharedPrefs.getString(KEY_LANGUAGE, "English")
         set(value) = sharedPrefs.putString(KEY_LANGUAGE, value)
 
-    var theme: String
-        get() = sharedPrefs.getString(KEY_THEME, "Starry Night")
-        set(value) = sharedPrefs.putString(KEY_THEME, value)
-
-    var notificationsEnabled: Boolean
-        get() = sharedPrefs.getBoolean(KEY_NOTIFICATIONS, true)
-        set(value) = sharedPrefs.putBoolean(KEY_NOTIFICATIONS, value)
 
     var dataRefreshRate: String
         get() = sharedPrefs.getString(KEY_DATA_REFRESH, "30 min")

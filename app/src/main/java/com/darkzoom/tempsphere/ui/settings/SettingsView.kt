@@ -115,7 +115,7 @@ private fun SettingsContent(state: SettingsUiState.Success, viewModel: SettingsV
                 )
             }
 
-            GlassSection(title = stringResource(R.string.appearance_language)) {
+            GlassSection(title = stringResource(R.string.language)) {
                 ExpandableRow(
                     icon = Icons.Rounded.Language,
                     iconColor = TempSphereExtendedTheme.colors.purple,
@@ -127,34 +127,11 @@ private fun SettingsContent(state: SettingsUiState.Success, viewModel: SettingsV
                     isOpen = openRow == "language",
                     onToggle = { toggleRow("language") }
                 )
-                ExpandableRow(
-                    icon = Icons.Rounded.Nightlight,
-                    iconColor = TempSphereExtendedTheme.colors.lightPurple,
-                    label = stringResource(R.string.theme),
-                    selected = state.theme,
-                    options = listOf("Dark", "Light"),
-                    onSelect = { viewModel.updateTheme(it) },
-                    accentColor = TempSphereExtendedTheme.colors.lightPurple,
-                    isOpen = openRow == "theme",
-                    onToggle = { toggleRow("theme") },
-                    isLast = true
-                )
+
             }
 
-            GlassSection(title = stringResource(R.string.data_notifications)) {
-                SettingsRow(
-                    icon = Icons.Rounded.Notifications,
-                    iconColor = TempSphereExtendedTheme.colors.orange,
-                    label = stringResource(R.string.push_notifications),
-                    value = if (state.notifications) stringResource(R.string.enabled) else stringResource(R.string.disabled),
-                    rightEl = {
-                        GlassToggle(
-                            enabled = state.notifications,
-                            onToggle = { viewModel.toggleNotifications() },
-                            color = TempSphereExtendedTheme.colors.orange
-                        )
-                    }
-                )
+            GlassSection(title = stringResource(R.string.data_refresh_rate)) {
+
                 ExpandableRow(
                     icon = Icons.Rounded.Security,
                     iconColor = TempSphereExtendedTheme.colors.emerald,

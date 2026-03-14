@@ -30,6 +30,7 @@ fun BottomNavBar(navController: NavController) {
     val theme = LocalAppTheme.current
     val screens = listOf(
         Screen.Home,
+        Screen.Alerts,
         Screen.Settings
     )
 

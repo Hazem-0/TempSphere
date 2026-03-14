@@ -17,8 +17,6 @@ sealed class SettingsUiState {
         val tempUnit: String,
         val windUnit: String,
         val language: String,
-        val theme: String,
-        val notifications: Boolean,
         val dataRefresh: String
     ) : SettingsUiState()
 }
@@ -31,8 +29,6 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
             tempUnit = repository.tempUnit,
             windUnit = repository.windUnit,
             language = repository.language,
-            theme = repository.theme,
-            notifications = repository.notificationsEnabled,
             dataRefresh = repository.dataRefreshRate
         )
     )
@@ -68,16 +64,7 @@ class SettingsViewModel(private val repository: SettingsRepository) : ViewModel(
         updateState { it.copy(language = lang) }
     }
 
-    fun updateTheme(newTheme: String) {
-        repository.theme = newTheme
-        updateState { it.copy(theme = newTheme) }
-    }
 
-    fun toggleNotifications() {
-        val newState = !repository.notificationsEnabled
-        repository.notificationsEnabled = newState
-        updateState { it.copy(notifications = newState) }
-    }
 
     fun updateDataRefresh(rate: String) {
         repository.dataRefreshRate = rate
