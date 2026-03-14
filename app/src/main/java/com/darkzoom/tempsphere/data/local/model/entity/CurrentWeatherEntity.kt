@@ -1,20 +1,14 @@
-package com.darkzoom.tempsphere.data.local.entity
-
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "forecast_items")
-data class ForecastItemEntity(
+@Entity(tableName = "current_weather")
+data class CurrentWeatherEntity(
     @PrimaryKey
-    val dt: Long,
-    val cityId: Int,
+    val id: Int,
+    val lat: Double,
+    val lon: Double,
     val cityName: String,
     val country: String,
-    val cityLat: Double,
-    val cityLon: Double,
-    val cityTimezone: Int,
-    val citySunrise: Long,
-    val citySunset: Long,
     val temp: Double,
     val feelsLike: Double,
     val tempMin: Double,
@@ -29,8 +23,10 @@ data class ForecastItemEntity(
     val weatherMain: String,
     val weatherDescription: String,
     val weatherIcon: String,
-    val pop: Double,
-    val dtTxt: String,
+    val sunrise: Long,
+    val sunset: Long,
+    val dt: Long,
+    val timezone: Int,
     val units: String,
     val lang: String,
     val cachedAt: Long = System.currentTimeMillis()
