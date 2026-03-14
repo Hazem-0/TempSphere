@@ -17,8 +17,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.darkzoom.tempsphere.data.remote.model.ForecastTab
-import com.darkzoom.tempsphere.data.remote.model.HomeUiState
+import com.darkzoom.tempsphere.data.local.model.ForecastTab
+import com.darkzoom.tempsphere.data.local.model.HomeUiState
 import com.darkzoom.tempsphere.ui.home.components.*
 import com.darkzoom.tempsphere.ui.theme.AccentPurple
 import androidx.compose.ui.platform.LocalContext

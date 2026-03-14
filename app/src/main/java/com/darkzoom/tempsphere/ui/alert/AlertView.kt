@@ -40,10 +40,6 @@ fun AlertsScreen(viewModel: AlertViewModel) {
     val context = LocalContext.current
     val alertManager = remember { AlertManager(context) }
 
-    val notificationLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) {}
-
     val exactAlarmLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) {
@@ -52,15 +48,17 @@ fun AlertsScreen(viewModel: AlertViewModel) {
         }
     }
 
-    LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val isGranted = ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-
-            if (!isGranted) {
-                notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            if (!alertManager.canScheduleExactAlarms() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                    data = Uri.parse("package:${context.packageName}")
+                }
+                exactAlarmLauncher.launch(intent)
+            } else {
+                showDialog = true
             }
         }
     }
@@ -68,8 +66,8 @@ fun AlertsScreen(viewModel: AlertViewModel) {
     if (showDialog) {
         ShowAlertDialog(
             onDismiss = { showDialog = false },
-            onSave = { timeText, type, hour, minute ->
-                viewModel.addAlert(timeText, type, hour, minute)
+            onSave = { timeText, type, hour, minute, repeatMode ->
+                viewModel.addAlert(timeText, type, hour, minute, repeatMode)
                 showDialog = false
             }
         )
@@ -128,10 +126,9 @@ fun AlertsScreen(viewModel: AlertViewModel) {
                 ) {
                     items(alerts.size) { index ->
                         val alert = alerts[index]
+
                         AlertCard(
-                            timeText = alert.timeText,
-                            alertType = alert.alertType,
-                            isEnabled = alert.isEnabled,
+                            alert = alert,
                             onToggle = { viewModel.toggleAlert(alert) },
                             onDelete = { viewModel.deleteAlert(alert) }
                         )
@@ -143,6 +140,17 @@ fun AlertsScreen(viewModel: AlertViewModel) {
 
         FloatingActionButton(
             onClick = {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    val isGranted = ContextCompat.checkSelfPermission(
+                        context, Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+
+                    if (!isGranted) {
+                        permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        return@FloatingActionButton
+                    }
+                }
+
                 if (!alertManager.canScheduleExactAlarms()) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {

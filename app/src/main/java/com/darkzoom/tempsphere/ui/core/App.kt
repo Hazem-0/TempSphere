@@ -51,7 +51,7 @@ class App : Application() {
     val alertManager by lazy { AlertManager(this) }
 
     private val alertLocalDatasource by lazy {
-        AlertLocalDatasource(db.alertDao())   // requires alertDao() on WeatherDatabase
+        AlertLocalDatasource(db.alertDao())
     }
 
     val alertRepository by lazy {

@@ -4,69 +4,55 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.darkzoom.tempsphere.data.local.model.AlertModel
-import com.darkzoom.tempsphere.utils.AlertManager
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.darkzoom.tempsphere.data.local.model.RepeatMode
+import com.darkzoom.tempsphere.data.repository.AlertRepository
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+
 class AlertViewModel(
-    private val alertManager: AlertManager
+    private val alertRepository: AlertRepository
 ) : ViewModel() {
 
-    private val _alerts = MutableStateFlow<List<AlertModel>>(emptyList())
-    val alerts: StateFlow<List<AlertModel>> = _alerts.asStateFlow()
 
-    fun addAlert(timeText: String, type: String, hour: Int, minute: Int) {
+    val alerts: StateFlow<List<AlertModel>> = alertRepository
+        .getAllAlerts()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
+
+
+    fun addAlert(timeText: String, type: String, hour: Int, minute: Int, repeatMode: RepeatMode) {
         viewModelScope.launch {
-            val newAlert = AlertModel(
-                id = System.currentTimeMillis().toInt(),
-                timeText = timeText,
-                alertType = type,
-                isEnabled = true,
-                hour = hour,
-                minute = minute
+            val alert = AlertModel(
+                id         = System.currentTimeMillis().toInt(),
+                timeText   = timeText,
+                alertType  = type,
+                isEnabled  = true,
+                hour       = hour,
+                minute     = minute,
+                repeatMode = repeatMode
             )
-            val currentList = _alerts.value.toMutableList()
-            currentList.add(newAlert)
-            _alerts.value = currentList
-            alertManager.scheduleAlert(newAlert)
+            alertRepository.addAlert(alert)
         }
     }
 
     fun toggleAlert(alert: AlertModel) {
-        viewModelScope.launch {
-            val currentList = _alerts.value.toMutableList()
-            val index = currentList.indexOfFirst { it.id == alert.id }
-            if (index != -1) {
-                val updatedAlert = alert.copy(isEnabled = !alert.isEnabled)
-                currentList[index] = updatedAlert
-                _alerts.value = currentList
-
-                if (updatedAlert.isEnabled) {
-                    alertManager.scheduleAlert(updatedAlert)
-                } else {
-                    alertManager.cancelAlert(updatedAlert)
-                }
-            }
-        }
+        viewModelScope.launch { alertRepository.toggleAlert(alert) }
     }
 
     fun deleteAlert(alert: AlertModel) {
-        viewModelScope.launch {
-            val currentList = _alerts.value.toMutableList()
-            currentList.remove(alert)
-            _alerts.value = currentList
-            alertManager.cancelAlert(alert)
-        }
+        viewModelScope.launch { alertRepository.deleteAlert(alert) }
     }
 
-    class Factory(
-        private val alertManager: AlertManager
-    ) : ViewModelProvider.Factory {
+
+    class Factory(private val alertRepository: AlertRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return AlertViewModel(alertManager) as T
-        }
+        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+            AlertViewModel(alertRepository) as T
     }
 }

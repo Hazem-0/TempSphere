@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
         val repository        = app.repository
         val locationTracker   = app.locationTracker
         val settingsRepository = app.settingsRepository
-        val alertRepository   = app.alertRepository   // ← repository, not manager
+        val alertRepository   = app.alertRepository
 
         setContent {
             val currentHour  = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)

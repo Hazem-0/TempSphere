@@ -19,4 +19,16 @@
     <string name="days">Days</string>
     <string name="location_permission_required_or_gps_disabled">Location permission required or GPS disabled.</string>
     <string name="failed_to_fetch_weather">Failed to fetch weather</string>
+    <string name="select_time">Select Time</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="new_weather_alert">New Weather Alert</string>
+    <string name="close">Close</string>
+    <string name="alert_time">ALERT TIME</string>
+    <string name="time">Time</string>
+    <string name="alert_type">ALERT TYPE</string>
+    <string name="notification">Notification</string>
+    <string name="alarm_sound">Alarm Sound</string>
+    <string name="repeat">REPEAT</string>
+    <string name="save_alert">Save Alert</string>
 </resources>

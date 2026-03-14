@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.darkzoom.tempsphere.R
-import com.darkzoom.tempsphere.data.remote.model.HomeUiState
+import com.darkzoom.tempsphere.data.local.model.HomeUiState
 import com.darkzoom.tempsphere.data.repository.SettingsRepository
 import com.darkzoom.tempsphere.data.repository.WeatherRepository
 import com.darkzoom.tempsphere.utils.LocationUtil

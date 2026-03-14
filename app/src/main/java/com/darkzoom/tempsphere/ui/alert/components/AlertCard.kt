@@ -19,24 +19,31 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.data.local.model.AlertModel
+import com.darkzoom.tempsphere.data.local.model.RepeatMode
 import com.darkzoom.tempsphere.ui.common.components.GlassCard
 import com.darkzoom.tempsphere.ui.settings.components.GlassToggle
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 
+
 @Composable
 fun AlertCard(
-    timeText: String,
-    alertType: String,
-    isEnabled: Boolean,
+    alert: AlertModel,
     onToggle: () -> Unit,
     onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val themeColors = LocalAppTheme.current
-    val iconColor = if (alertType == "Alarm Sound") themeColors.accentPrimary else themeColors.accentSecondary
-    val icon = if (alertType == "Alarm Sound") Icons.Rounded.Alarm else Icons.Rounded.NotificationsActive
+    val isAlarm = alert.alertType == AlertModel.TYPE_ALARM
+    val iconColor = if (isAlarm) themeColors.accentPrimary else themeColors.accentSecondary
+    val icon = if (isAlarm) Icons.Rounded.Alarm else Icons.Rounded.NotificationsActive
 
-    GlassCard(modifier = modifier.fillMaxWidth(), contentPadding = 16.dp) {
+    val cardTransparency = if (alert.isEnabled) 1f else 0.5f
+
+    GlassCard(
+        modifier = modifier.fillMaxWidth(),
+        contentPadding = 16.dp
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -44,44 +51,53 @@ fun AlertCard(
             Box(
                 modifier = Modifier
                     .size(42.dp)
-                    .shadow(elevation = 8.dp, shape = CircleShape, spotColor = iconColor)
+                    .shadow(
+                        elevation = if (alert.isEnabled) 8.dp else 0.dp,
+                        shape = CircleShape,
+                        spotColor = iconColor
+                    )
                     .clip(CircleShape)
-                    .background(iconColor.copy(alpha = 0.15f)),
+                    .background(iconColor.copy(alpha = 0.15f * cardTransparency)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = null, tint = iconColor, modifier = Modifier.size(22.dp))
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = iconColor.copy(alpha = cardTransparency),
+                    modifier = Modifier.size(22.dp)
+                )
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = timeText,
-                    color = themeColors.textPrimary,
+                    text = alert.timeText,
+                    color = themeColors.textPrimary.copy(alpha = cardTransparency),
                     style = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp
                     )
                 )
                 Text(
-                    text = alertType,
-                    color = themeColors.textSecondary,
+                    text = buildSubtitle(alert.alertType, alert.repeatMode),
+                    color = themeColors.textSecondary.copy(alpha = cardTransparency),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 3.dp)
                 )
             }
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 GlassToggle(
-                    enabled = isEnabled,
+                    enabled = alert.isEnabled,
                     onToggle = onToggle,
                     color = iconColor
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
                     Icon(
-                        Icons.Rounded.DeleteOutline,
-                        contentDescription = null,
+                        imageVector = Icons.Rounded.DeleteOutline,
+                        contentDescription = "Delete alert",
                         tint = themeColors.pressureIcon,
                         modifier = Modifier.size(20.dp)
                     )
@@ -90,3 +106,6 @@ fun AlertCard(
         }
     }
 }
+
+private fun buildSubtitle(alertType: String, repeatMode: RepeatMode): String =
+    "$alertType  ·  ${repeatMode.displayLabel()}"
