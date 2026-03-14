@@ -34,4 +34,6 @@
     <string name="weather_alarm">⏰ Weather  Alarm</string>
     <string name="time_to_wake_up_open_tempsphere_for_the_forecast">Time to wake up! Open TempSphere for the forecast.</string>
     <string name="alarm">⏰ Alarm · %1$s</string>
+    <string name="weather_alerts">Weather Alerts</string>
+    <string name="manage_your_alarms_and_notifications">Manage your alarms and notifications</string>
 </resources>

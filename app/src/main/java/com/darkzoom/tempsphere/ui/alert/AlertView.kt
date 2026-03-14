@@ -22,11 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.alert.components.AlertCard
 import com.darkzoom.tempsphere.ui.alert.components.ShowAlertDialog
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
@@ -81,14 +83,14 @@ fun AlertsScreen(viewModel: AlertViewModel) {
         ) {
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
                 Text(
-                    text = "Weather Alerts",
+                    text = stringResource(R.string.weather_alerts),
                     color = themeColors.textPrimary,
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = (-0.5).sp
                 )
                 Text(
-                    text = "Manage your alarms and notifications",
+                    text = stringResource(R.string.manage_your_alarms_and_notifications),
                     color = themeColors.textSecondary,
                     fontSize = 13.sp,
                     modifier = Modifier.padding(top = 2.dp)
