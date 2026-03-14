@@ -15,7 +15,7 @@ import com.darkzoom.tempsphere.data.local.model.entity.AlertEntity
         ForecastItemEntity::class,
         AlertEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class WeatherDatabase : RoomDatabase() {

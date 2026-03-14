@@ -187,3 +187,8 @@ fun AlertModel.toEntity(): AlertEntity = AlertEntity(
 
  fun Long.toDayLabel() =
     SimpleDateFormat("EEE", Locale.getDefault()).format(Date(this * 1000))
+
+
+ fun String.toApiUnits()   = when (this) { "Celsius" -> "metric"; "Fahrenheit" -> "imperial"; else -> "standard" }
+ fun String.toApiLang()    = when (this) { "Arabic"  -> "ar";     else -> "en" }
+ fun String.toUnitSymbol() = when (this) { "metric"  -> "°C";     "imperial" -> "°F";         else -> " K" }
