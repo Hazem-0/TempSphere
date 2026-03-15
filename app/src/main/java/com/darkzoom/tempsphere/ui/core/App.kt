@@ -3,12 +3,14 @@ package com.darkzoom.tempsphere.ui.core
 import android.app.Application
 import android.content.Context
 import com.darkzoom.tempsphere.data.contract.SharedPrefDatasource
-import com.darkzoom.tempsphere.data.local.db.WeatherDatabase
 import com.darkzoom.tempsphere.data.local.datasource.AlertLocalDatasource
+import com.darkzoom.tempsphere.data.local.datasource.FavouriteLocalDatasource
 import com.darkzoom.tempsphere.data.local.datasource.SharedPrefDatasourceImp
 import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
+import com.darkzoom.tempsphere.data.local.db.WeatherDatabase
 import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.data.repository.AlertRepository
+import com.darkzoom.tempsphere.data.repository.FavouritesRepository
 import com.darkzoom.tempsphere.data.repository.SettingsRepository
 import com.darkzoom.tempsphere.data.repository.WeatherRepository
 import com.darkzoom.tempsphere.utils.AlertManager
@@ -17,9 +19,7 @@ import com.google.android.gms.location.LocationServices
 
 class App : Application() {
 
-
     private val db by lazy { WeatherDatabase.getInstance(this) }
-
 
     val locationTracker by lazy {
         LocationUtil(
@@ -38,15 +38,29 @@ class App : Application() {
         WeatherRepository(weatherRemoteDatasource, weatherLocalDatasource)
     }
 
+    // ── Favourites ────────────────────────────────────────────────────────────
+
+    private val favouriteLocalDatasource by lazy {
+        FavouriteLocalDatasource(db.favouriteLocationDao())
+    }
+
+    val favouritesRepository by lazy {
+        FavouritesRepository(favouriteLocalDatasource, weatherRemoteDatasource)
+    }
+
+    // ── Settings ──────────────────────────────────────────────────────────────
 
     private val sharedPrefDatasource: SharedPrefDatasource by lazy {
-        SharedPrefDatasourceImp(getSharedPreferences("tempsphere_preferences", Context.MODE_PRIVATE))
+        SharedPrefDatasourceImp(
+            getSharedPreferences("tempsphere_preferences", Context.MODE_PRIVATE)
+        )
     }
 
     val settingsRepository by lazy {
         SettingsRepository.getInstance(sharedPrefDatasource)
     }
 
+    // ── Alerts ────────────────────────────────────────────────────────────────
 
     val alertManager by lazy { AlertManager(this) }
 
