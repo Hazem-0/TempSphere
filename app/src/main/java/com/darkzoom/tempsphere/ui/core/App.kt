@@ -10,7 +10,6 @@ import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
 import com.darkzoom.tempsphere.data.local.db.WeatherDatabase
 import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.data.repository.AlertRepository
-import com.darkzoom.tempsphere.data.repository.FavouritesRepository
 import com.darkzoom.tempsphere.data.repository.SettingsRepository
 import com.darkzoom.tempsphere.data.repository.WeatherRepository
 import com.darkzoom.tempsphere.utils.AlertManager
@@ -34,21 +33,18 @@ class App : Application() {
 
     private val weatherRemoteDatasource by lazy { WeatherRemoteDatasource() }
 
-    val repository by lazy {
-        WeatherRepository(weatherRemoteDatasource, weatherLocalDatasource)
-    }
-
-    // ── Favourites ────────────────────────────────────────────────────────────
-
     private val favouriteLocalDatasource by lazy {
         FavouriteLocalDatasource(db.favouriteLocationDao())
     }
 
-    val favouritesRepository by lazy {
-        FavouritesRepository(favouriteLocalDatasource, weatherRemoteDatasource)
+    val repository by lazy {
+        WeatherRepository(
+            remoteDataSource = weatherRemoteDatasource,
+            localDatasource = weatherLocalDatasource,
+            favouriteLocalDatasource = favouriteLocalDatasource
+        )
     }
 
-    // ── Settings ──────────────────────────────────────────────────────────────
 
     private val sharedPrefDatasource: SharedPrefDatasource by lazy {
         SharedPrefDatasourceImp(
@@ -59,8 +55,6 @@ class App : Application() {
     val settingsRepository by lazy {
         SettingsRepository.getInstance(sharedPrefDatasource)
     }
-
-    // ── Alerts ────────────────────────────────────────────────────────────────
 
     val alertManager by lazy { AlertManager(this) }
 
