@@ -11,6 +11,7 @@ plugins {
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
 val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
+val mapsApiKey = properties.getProperty("MAPS_API_KEY") ?: ""
 
 android {
     namespace = "com.darkzoom.tempsphere"
@@ -25,6 +26,8 @@ android {
 
         buildConfigField("String", "BASE_URL", "\"https://api.openweathermap.org/data/2.5/\"")
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
+
+        manifestPlaceholders["mapsApiKey"] = mapsApiKey
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,6 +68,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.media3.common.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.junit.junit)
     testImplementation(libs.junit.junit)
@@ -76,6 +80,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     implementation(libs.play.services.location)
+
+    implementation(libs.play.services.maps)
+
     implementation(libs.work.runtime.ktx)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
@@ -94,7 +101,6 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
-
 
     testImplementation(libs.mocck)
     testImplementation(libs.mocck.agent)

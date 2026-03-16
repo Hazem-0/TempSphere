@@ -1,4 +1,4 @@
-package com.darkzoom.tempsphere.ui.navigation
+package com.darkzoom.tempsphere.ui.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.darkzoom.tempsphere.ui.core.components.Screen
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 
 @Composable
@@ -30,6 +29,7 @@ fun BottomNavBar(navController: NavController) {
     val theme = LocalAppTheme.current
     val screens = listOf(
         Screen.Home,
+        Screen.Places,
         Screen.Alerts,
         Screen.Settings
     )
