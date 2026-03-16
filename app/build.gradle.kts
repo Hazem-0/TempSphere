@@ -101,7 +101,8 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
-
+    testImplementation(libs.turbine)
     testImplementation(libs.mocck)
     testImplementation(libs.mocck.agent)
+    testImplementation(libs.kotlinx.coroutines.test)
 }

@@ -10,8 +10,8 @@ import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.DailyWeather
 import com.darkzoom.tempsphere.data.local.model.HourlyWeather
 import com.darkzoom.tempsphere.data.local.model.WeatherType
-import com.darkzoom.tempsphere.data.repository.SettingsRepository
-import com.darkzoom.tempsphere.data.repository.WeatherRepository
+import com.darkzoom.tempsphere.data.repository.SettingsRepositoryImp
+import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.LocationUtil
 import com.darkzoom.tempsphere.utils.toSuccess
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,9 +44,9 @@ sealed class HomeUiState {
 }
 
 class HomeViewModel(
-    private val repository: WeatherRepository,
+    private val repository: WeatherRepositoryImp,
     private val locationTracker: LocationUtil,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepositoryImp
 ) : ViewModel() {
 
     private val apiUnits: String
@@ -157,9 +157,9 @@ class HomeViewModel(
     }
 
     class Factory(
-        private val repository: WeatherRepository,
+        private val repository: WeatherRepositoryImp,
         private val locationTracker: LocationUtil,
-        private val settingsRepository: SettingsRepository
+        private val settingsRepository: SettingsRepositoryImp
     ) : ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")

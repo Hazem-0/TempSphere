@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.darkzoom.tempsphere.data.local.model.AlertModel
 import com.darkzoom.tempsphere.data.local.model.RepeatMode
-import com.darkzoom.tempsphere.data.repository.AlertRepository
+import com.darkzoom.tempsphere.data.repository.AlertRepositoryImp
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 
 class AlertViewModel(
-    private val alertRepository: AlertRepository
+    private val alertRepository: AlertRepositoryImp
 ) : ViewModel() {
 
 
@@ -50,7 +50,7 @@ class AlertViewModel(
     }
 
 
-    class Factory(private val alertRepository: AlertRepository) : ViewModelProvider.Factory {
+    class Factory(private val alertRepository: AlertRepositoryImp) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             AlertViewModel(alertRepository) as T

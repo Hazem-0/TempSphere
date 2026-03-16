@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.darkzoom.tempsphere.data.local.model.SavedLocation
 import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
-import com.darkzoom.tempsphere.data.repository.WeatherRepository
+import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.toCachedSavedLocation
 import com.darkzoom.tempsphere.utils.updateWith
 import kotlinx.coroutines.async
@@ -30,7 +30,7 @@ sealed class PlacesUiState {
 }
 
 class PlacesViewModel(
-    private val repository: WeatherRepository,
+    private val repository: WeatherRepositoryImp,
     private val units: String = "metric",
     private val lang: String = "en"
 ) : ViewModel() {
@@ -123,7 +123,7 @@ class PlacesViewModel(
     }
 
     class Factory(
-        private val repository: WeatherRepository,
+        private val repository: WeatherRepositoryImp,
         private val units: String,
         private val lang: String
     ) : ViewModelProvider.Factory {

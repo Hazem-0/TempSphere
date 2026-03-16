@@ -8,7 +8,7 @@ import com.darkzoom.tempsphere.data.local.datasource.FavouriteLocationDatasource
 import com.darkzoom.tempsphere.data.local.datasource.SharedPrefDatasourceImp
 import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasourceImp
 import com.darkzoom.tempsphere.data.local.db.WeatherDatabase
-import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
+import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasourceImp
 import com.darkzoom.tempsphere.data.repository.AlertRepositoryImp
 import com.darkzoom.tempsphere.data.repository.SettingsRepositoryImp
 import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
@@ -35,7 +35,7 @@ class App : Application() {
         )
     }
 
-    private val weatherRemoteDatasource by lazy { WeatherRemoteDatasource() }
+    private val weatherRemoteDatasource by lazy { WeatherRemoteDatasourceImp() }
 
     private val favouriteLocalDatasource by lazy {
         FavouriteLocationDatasourceImp(db.favouriteLocationDao())
