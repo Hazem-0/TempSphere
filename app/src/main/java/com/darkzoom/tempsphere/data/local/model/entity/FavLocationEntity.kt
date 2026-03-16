@@ -11,5 +11,12 @@ data class FavLocationEntity(
     val country: String,
     val latitude: Double,
     val longitude: Double,
-    val addedAt: Long = System.currentTimeMillis()
+    val addedAt: Long = System.currentTimeMillis(),
+    val cachedTemp: Int? = null,
+    val cachedFeelsLike: Int? = null,
+    val cachedHigh: Int? = null,
+    val cachedLow: Int? = null,
+    val cachedDescription: String? = null,
+    val cachedWeatherTypeString: String? = null,
+    val lastUpdated: Long? = null
 )

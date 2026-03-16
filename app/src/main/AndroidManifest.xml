@@ -48,7 +48,7 @@
         </activity>
 
         <activity
-            android:name=".ui.places.map.MapPickerActivity"
+            android:name=".ui.places.MapPickerActivity"
             android:exported="false"
             android:theme="@style/Theme.TempSphere"
             android:windowSoftInputMode="adjustResize" />

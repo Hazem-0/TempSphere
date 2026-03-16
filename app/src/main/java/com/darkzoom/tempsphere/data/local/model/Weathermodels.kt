@@ -1,5 +1,7 @@
 package com.darkzoom.tempsphere.data.local.model
 
+import androidx.compose.ui.graphics.Color
+
 enum class ForecastTab {
     HOURLY, WEEKLY
 }
@@ -23,24 +25,22 @@ data class DailyWeather(
     val precipPct: Int
 )
 
-sealed class HomeUiState {
-    data object Loading : HomeUiState()
-    data class Error(val message: String) : HomeUiState()
-    data class Success(
-        val city: String,
-        val temp: Int,
-        val feelsLike: Int,
-        val high: Int,
-        val low: Int,
-        val description: String,
-        val weatherType: WeatherType,
-        val humidity: Int,
-        val windMs: Float,
-        val pressureHpa: Int,
-        val cloudinessPct: Int,
-        val dateLabel: String,
-        val hourly: List<HourlyWeather>,
-        val daily: List<DailyWeather>,
-        val isRefreshing: Boolean = false
-    ) : HomeUiState()
-}
+data class SavedLocation(
+    val id: Int,
+    val city: String,
+    val country: String,
+    val latitude: Double,
+    val longitude: Double,
+    val temp: Int,
+    val feelsLike: Int,
+    val high: Int,
+    val low: Int,
+    val description: String,
+    val time: String,
+    val type: WeatherType,
+    val isCurrent: Boolean = false,
+    val gradientColors: List<Color>
+)
+
+
+

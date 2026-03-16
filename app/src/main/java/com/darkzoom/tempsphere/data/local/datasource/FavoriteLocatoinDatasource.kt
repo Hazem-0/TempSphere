@@ -19,6 +19,9 @@ class FavouriteLocalDatasource(
     suspend fun insertFavourite(entity: FavLocationEntity): Long =
         dao.insertFavourite(entity)
 
+    suspend fun updateFavourite(entity: FavLocationEntity) =
+        dao.updateFavourite(entity)
+
     suspend fun deleteFavouriteById(id: Int) =
         dao.deleteFavouriteById(id)
 }
