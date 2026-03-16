@@ -5,9 +5,9 @@ import ForecastItemEntity
 import com.darkzoom.tempsphere.BuildConfig
 import com.darkzoom.tempsphere.data.contract.FavouriteLocationDatasource
 import com.darkzoom.tempsphere.data.contract.WeatherLocalDatasource
+import com.darkzoom.tempsphere.data.contract.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.data.contract.WeatherRepository
 import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
-import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.data.remote.model.CurrentWeatherResponse
 import com.darkzoom.tempsphere.data.remote.model.ForecastResponse
 import com.darkzoom.tempsphere.utils.toEntities
