@@ -14,6 +14,7 @@ import com.darkzoom.tempsphere.data.repository.SettingsRepositoryImp
 import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.AlertManager
 import com.darkzoom.tempsphere.utils.LocationUtil
+import com.darkzoom.tempsphere.utils.LocationUtilImp
 import com.google.android.gms.location.LocationServices
 import kotlin.getValue
 
@@ -22,7 +23,7 @@ class App : Application() {
     private val db by lazy { WeatherDatabase.getInstance(this) }
 
     val locationTracker by lazy {
-        LocationUtil(
+        LocationUtilImp(
             LocationServices.getFusedLocationProviderClient(this),
             this
         )

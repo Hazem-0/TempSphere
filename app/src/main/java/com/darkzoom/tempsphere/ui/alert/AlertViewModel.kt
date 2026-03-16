@@ -3,6 +3,7 @@ package com.darkzoom.tempsphere.ui.alert
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.darkzoom.tempsphere.data.contract.AlertRepository
 import com.darkzoom.tempsphere.data.local.model.AlertModel
 import com.darkzoom.tempsphere.data.local.model.RepeatMode
 import com.darkzoom.tempsphere.data.repository.AlertRepositoryImp
@@ -13,7 +14,7 @@ import kotlinx.coroutines.launch
 
 
 class AlertViewModel(
-    private val alertRepository: AlertRepositoryImp
+    private val alertRepository: AlertRepository
 ) : ViewModel() {
 
 

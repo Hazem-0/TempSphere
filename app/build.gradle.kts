@@ -105,4 +105,5 @@ dependencies {
     testImplementation(libs.mocck)
     testImplementation(libs.mocck.agent)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.core.testing)
 }

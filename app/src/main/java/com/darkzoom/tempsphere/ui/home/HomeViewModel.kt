@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.darkzoom.tempsphere.R
+import com.darkzoom.tempsphere.data.contract.SettingsRepository
+import com.darkzoom.tempsphere.data.contract.WeatherRepository
 import com.darkzoom.tempsphere.data.local.model.DailyWeather
 import com.darkzoom.tempsphere.data.local.model.HourlyWeather
 import com.darkzoom.tempsphere.data.local.model.WeatherType
@@ -44,9 +46,9 @@ sealed class HomeUiState {
 }
 
 class HomeViewModel(
-    private val repository: WeatherRepositoryImp,
+    private val repository: WeatherRepository,
     private val locationTracker: LocationUtil,
-    private val settingsRepository: SettingsRepositoryImp
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val apiUnits: String
