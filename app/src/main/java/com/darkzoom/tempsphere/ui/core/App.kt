@@ -3,18 +3,19 @@ package com.darkzoom.tempsphere.ui.core
 import android.app.Application
 import android.content.Context
 import com.darkzoom.tempsphere.data.contract.SharedPrefDatasource
-import com.darkzoom.tempsphere.data.local.datasource.AlertLocalDatasource
-import com.darkzoom.tempsphere.data.local.datasource.FavouriteLocalDatasource
+import com.darkzoom.tempsphere.data.local.datasource.AlertLocalDatasourceImp
+import com.darkzoom.tempsphere.data.local.datasource.FavouriteLocationDatasourceImp
 import com.darkzoom.tempsphere.data.local.datasource.SharedPrefDatasourceImp
-import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
+import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasourceImp
 import com.darkzoom.tempsphere.data.local.db.WeatherDatabase
 import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
-import com.darkzoom.tempsphere.data.repository.AlertRepository
-import com.darkzoom.tempsphere.data.repository.SettingsRepository
-import com.darkzoom.tempsphere.data.repository.WeatherRepository
+import com.darkzoom.tempsphere.data.repository.AlertRepositoryImp
+import com.darkzoom.tempsphere.data.repository.SettingsRepositoryImp
+import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.AlertManager
 import com.darkzoom.tempsphere.utils.LocationUtil
 import com.google.android.gms.location.LocationServices
+import kotlin.getValue
 
 class App : Application() {
 
@@ -28,17 +29,20 @@ class App : Application() {
     }
 
     private val weatherLocalDatasource by lazy {
-        WeatherLocalDatasource(db.currentWeatherDao(), db.forecastDao())
+    WeatherLocalDatasourceImp(
+            db.currentWeatherDao(),
+            db.forecastDao()
+        )
     }
 
     private val weatherRemoteDatasource by lazy { WeatherRemoteDatasource() }
 
     private val favouriteLocalDatasource by lazy {
-        FavouriteLocalDatasource(db.favouriteLocationDao())
+        FavouriteLocationDatasourceImp(db.favouriteLocationDao())
     }
 
     val repository by lazy {
-        WeatherRepository(
+        WeatherRepositoryImp(
             remoteDataSource = weatherRemoteDatasource,
             localDatasource = weatherLocalDatasource,
             favouriteLocalDatasource = favouriteLocalDatasource
@@ -53,16 +57,16 @@ class App : Application() {
     }
 
     val settingsRepository by lazy {
-        SettingsRepository.getInstance(sharedPrefDatasource)
+        SettingsRepositoryImp.getInstance(sharedPrefDatasource)
     }
 
     val alertManager by lazy { AlertManager(this) }
 
     private val alertLocalDatasource by lazy {
-        AlertLocalDatasource(db.alertDao())
+        AlertLocalDatasourceImp(db.alertDao())
     }
 
     val alertRepository by lazy {
-        AlertRepository(alertLocalDatasource, alertManager)
+        AlertRepositoryImp(alertLocalDatasource, alertManager)
     }
 }

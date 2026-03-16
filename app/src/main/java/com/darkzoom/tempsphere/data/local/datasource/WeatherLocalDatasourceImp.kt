@@ -2,47 +2,44 @@ package com.darkzoom.tempsphere.data.local.datasource
 
 import CurrentWeatherEntity
 import ForecastItemEntity
+import com.darkzoom.tempsphere.data.contract.WeatherLocalDatasource
 import com.darkzoom.tempsphere.data.local.dao.CurrentWeatherDao
 import com.darkzoom.tempsphere.data.local.dao.ForecastDao
 
 import kotlinx.coroutines.flow.Flow
 
-class WeatherLocalDatasource(
+class WeatherLocalDatasourceImp(
     private val currentWeatherDao: CurrentWeatherDao,
     private val forecastDao: ForecastDao
-) {
+) : WeatherLocalDatasource {
 
-
-
-    suspend fun cacheCurrentWeather(entity: CurrentWeatherEntity) {
+    override suspend fun cacheCurrentWeather(entity: CurrentWeatherEntity) {
         currentWeatherDao.insertCurrentWeather(entity)
     }
 
-    fun getCurrentWeather(): Flow<CurrentWeatherEntity?> =
+    override fun getCurrentWeather(): Flow<CurrentWeatherEntity?> =
         currentWeatherDao.getCurrentWeather()
 
-    suspend fun clearCurrentWeather(lat: Double, lon: Double, units: String, lang: String) {
+    override suspend fun clearCurrentWeather(lat: Double, lon: Double, units: String, lang: String) {
         currentWeatherDao.deleteCurrentWeather(lat, lon, units, lang)
     }
 
-    suspend fun clearAllCurrentWeather() {
+    override suspend fun clearAllCurrentWeather() {
         currentWeatherDao.deleteAllCurrentWeather()
     }
 
-    suspend fun clearAllForecast() {
+    override suspend fun clearAllForecast() {
         forecastDao.deleteAllForecast()
     }
 
-
-    suspend fun cacheForecast(items: List<ForecastItemEntity>) {
+    override suspend fun cacheForecast(items: List<ForecastItemEntity>) {
         forecastDao.insertForecastItems(items)
     }
 
-    fun getForecast(): Flow<List<ForecastItemEntity>> =
+    override fun getForecast(): Flow<List<ForecastItemEntity>> =
         forecastDao.getForecast()
 
-    suspend fun clearForecast(lat: Double, lon: Double, units: String, lang: String) {
+    override suspend fun clearForecast(lat: Double, lon: Double, units: String, lang: String) {
         forecastDao.deleteForecast(lat, lon, units, lang)
     }
-
 }
