@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.darkzoom.tempsphere.data.local.model.PlaceDetailData
-import com.darkzoom.tempsphere.data.repository.WeatherRepository
+import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.toPlaceDetailData
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ sealed class PlaceDetailUiState {
 
 class PlaceDetailViewModel(
     private val favouriteId: Int,
-    private val repository: WeatherRepository,
+    private val repository: WeatherRepositoryImp,
     private val units: String = "metric",
     private val lang: String = "en"
 ) : ViewModel() {
@@ -78,7 +78,7 @@ class PlaceDetailViewModel(
 
     class Factory(
         private val favouriteId: Int,
-        private val repository: WeatherRepository,
+        private val repository: WeatherRepositoryImp,
         private val units: String,
         private val lang: String
     ) : ViewModelProvider.Factory {

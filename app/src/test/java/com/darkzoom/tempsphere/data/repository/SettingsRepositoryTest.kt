@@ -8,12 +8,12 @@ import org.junit.Assert.assertEquals
 class SettingsRepositoryTest {
 
     private lateinit var fakeSharedPrefs: FakeSharedPrefDatasource
-    private lateinit var settingsRepository: SettingsRepository
+    private lateinit var settingsRepository: SettingsRepositoryImp
 
     @Before
     fun setup() {
         fakeSharedPrefs = FakeSharedPrefDatasource()
-        settingsRepository = SettingsRepository(fakeSharedPrefs)
+        settingsRepository = SettingsRepositoryImp(fakeSharedPrefs)
     }
 
     @Test
@@ -28,7 +28,7 @@ class SettingsRepositoryTest {
         val newMode = "Manual"
         settingsRepository.locationMode = newMode
         assertEquals(newMode, settingsRepository.locationMode)
-        assertEquals(newMode, fakeSharedPrefs.getString(SettingsRepository.KEY_LOCATION_MODE, ""))
+        assertEquals(newMode, fakeSharedPrefs.getString(SettingsRepositoryImp.KEY_LOCATION_MODE, ""))
     }
 
     @Test
@@ -42,6 +42,6 @@ class SettingsRepositoryTest {
         val newUnit = "Celsius"
         settingsRepository.tempUnit = newUnit
         assertEquals(newUnit, settingsRepository.tempUnit)
-        assertEquals(newUnit, fakeSharedPrefs.getString(SettingsRepository.KEY_TEMP_UNIT, ""))
+        assertEquals(newUnit, fakeSharedPrefs.getString(SettingsRepositoryImp.KEY_TEMP_UNIT, ""))
     }
 }

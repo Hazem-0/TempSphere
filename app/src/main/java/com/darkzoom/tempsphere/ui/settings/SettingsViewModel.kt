@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.darkzoom.tempsphere.data.local.datasource.SharedPrefDatasourceImp // Added this import
-import com.darkzoom.tempsphere.data.repository.SettingsRepository
+import com.darkzoom.tempsphere.data.repository.SettingsRepositoryImp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ sealed class SettingsUiState {
     ) : SettingsUiState()
 }
 
-class SettingsViewModel(private val repository: SettingsRepository) : ViewModel() {
+class SettingsViewModel(private val repository: SettingsRepositoryImp) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SettingsUiState>(
         SettingsUiState.Success(
@@ -77,7 +77,7 @@ class SettingsViewModelFactory(private val context: Context) : ViewModelProvider
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             val prefs = context.getSharedPreferences("tempsphere_preferences", Context.MODE_PRIVATE)
             val datasource = SharedPrefDatasourceImp(prefs)
-            val repository = SettingsRepository.getInstance(datasource)
+            val repository = SettingsRepositoryImp.getInstance(datasource)
             @Suppress("UNCHECKED_CAST")
             return SettingsViewModel(repository) as T
         }

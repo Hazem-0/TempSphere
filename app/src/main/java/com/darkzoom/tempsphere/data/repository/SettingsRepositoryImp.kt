@@ -1,8 +1,9 @@
 package com.darkzoom.tempsphere.data.repository
 
+import com.darkzoom.tempsphere.data.contract.SettingsRepository
 import com.darkzoom.tempsphere.data.contract.SharedPrefDatasource
 
-class SettingsRepository(val sharedPrefs: SharedPrefDatasource) {
+class SettingsRepositoryImp(val sharedPrefs: SharedPrefDatasource) : SettingsRepository {
 
     companion object {
         const val KEY_LOCATION_MODE = "location_mode"
@@ -12,33 +13,32 @@ class SettingsRepository(val sharedPrefs: SharedPrefDatasource) {
         const val KEY_DATA_REFRESH = "data_refresh"
 
         @Volatile
-        private var INSTANCE: SettingsRepository? = null
+        private var INSTANCE: SettingsRepositoryImp? = null
 
-        fun getInstance(sharedPrefs: SharedPrefDatasource): SettingsRepository {
+        fun getInstance(sharedPrefs: SharedPrefDatasource): SettingsRepositoryImp {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SettingsRepository(sharedPrefs).also { INSTANCE = it }
+                INSTANCE ?: SettingsRepositoryImp(sharedPrefs).also { INSTANCE = it }
             }
         }
     }
 
-    var locationMode: String
+    override var locationMode: String
         get() = sharedPrefs.getString(KEY_LOCATION_MODE, "GPS")
         set(value) = sharedPrefs.putString(KEY_LOCATION_MODE, value)
 
-    var tempUnit: String
+    override var tempUnit: String
         get() = sharedPrefs.getString(KEY_TEMP_UNIT, "Fahrenheit")
         set(value) = sharedPrefs.putString(KEY_TEMP_UNIT, value)
 
-    var windUnit: String
+    override var windUnit: String
         get() = sharedPrefs.getString(KEY_WIND_UNIT, "m/s")
         set(value) = sharedPrefs.putString(KEY_WIND_UNIT, value)
 
-    var language: String
+    override var language: String
         get() = sharedPrefs.getString(KEY_LANGUAGE, "English")
         set(value) = sharedPrefs.putString(KEY_LANGUAGE, value)
 
-
-    var dataRefreshRate: String
+    override var dataRefreshRate: String
         get() = sharedPrefs.getString(KEY_DATA_REFRESH, "30 min")
         set(value) = sharedPrefs.putString(KEY_DATA_REFRESH, value)
 }

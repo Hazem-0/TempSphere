@@ -3,25 +3,26 @@ package com.darkzoom.tempsphere.data.repository
 import CurrentWeatherEntity
 import ForecastItemEntity
 import com.darkzoom.tempsphere.BuildConfig
-import com.darkzoom.tempsphere.data.local.datasource.FavouriteLocalDatasource
-import com.darkzoom.tempsphere.data.local.datasource.WeatherLocalDatasource
+import com.darkzoom.tempsphere.data.contract.FavouriteLocationDatasource
+import com.darkzoom.tempsphere.data.contract.WeatherLocalDatasource
+import com.darkzoom.tempsphere.data.contract.WeatherRemoteDatasource
+import com.darkzoom.tempsphere.data.contract.WeatherRepository
 import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
-import com.darkzoom.tempsphere.data.remote.datasource.WeatherRemoteDatasource
 import com.darkzoom.tempsphere.data.remote.model.CurrentWeatherResponse
 import com.darkzoom.tempsphere.data.remote.model.ForecastResponse
 import com.darkzoom.tempsphere.utils.toEntities
 import com.darkzoom.tempsphere.utils.toEntity
 import kotlinx.coroutines.flow.Flow
 
-class WeatherRepository(
+class WeatherRepositoryImp(
     private val remoteDataSource: WeatherRemoteDatasource,
     private val localDatasource: WeatherLocalDatasource,
-    private val favouriteLocalDatasource: FavouriteLocalDatasource
-) {
+    private val favouriteLocalDatasource: FavouriteLocationDatasource
+) : WeatherRepository {
 
     private val apiKey = BuildConfig.API_KEY
 
-    fun getCurrentWeather(
+    override fun getCurrentWeather(
         lat: Double,
         lon: Double,
         units: String,
@@ -30,7 +31,7 @@ class WeatherRepository(
         return localDatasource.getCurrentWeather()
     }
 
-    suspend fun refreshCurrentWeather(
+    override suspend fun refreshCurrentWeather(
         lat: Double,
         lon: Double,
         units: String,
@@ -41,7 +42,7 @@ class WeatherRepository(
         localDatasource.cacheCurrentWeather(response.toEntity(units, lang))
     }
 
-    suspend fun clearCurrentWeather(
+    override suspend fun clearCurrentWeather(
         lat: Double,
         lon: Double,
         units: String,
@@ -50,15 +51,15 @@ class WeatherRepository(
         localDatasource.clearCurrentWeather(lat, lon, units, lang)
     }
 
-    suspend fun clearAllCurrentWeather() {
+    override suspend fun clearAllCurrentWeather() {
         localDatasource.clearAllCurrentWeather()
     }
 
-    suspend fun clearAllForecast() {
+    override suspend fun clearAllForecast() {
         localDatasource.clearAllForecast()
     }
 
-    fun getForecast(
+    override fun getForecast(
         lat: Double,
         lon: Double,
         units: String,
@@ -67,7 +68,7 @@ class WeatherRepository(
         return localDatasource.getForecast()
     }
 
-    suspend fun refreshForecast(
+    override suspend fun refreshForecast(
         lat: Double,
         lon: Double,
         units: String,
@@ -78,13 +79,13 @@ class WeatherRepository(
         localDatasource.cacheForecast(response.toEntities(units, lang))
     }
 
-    fun getAllFavourites(): Flow<List<FavLocationEntity>> =
+    override fun getAllFavourites(): Flow<List<FavLocationEntity>> =
         favouriteLocalDatasource.getAllFavourites()
 
-    suspend fun getFavouriteById(id: Int): FavLocationEntity? =
+    override suspend fun getFavouriteById(id: Int): FavLocationEntity? =
         favouriteLocalDatasource.getFavouriteById(id)
 
-    suspend fun addFavourite(
+    override suspend fun addFavourite(
         city: String,
         country: String,
         lat: Double,
@@ -100,16 +101,16 @@ class WeatherRepository(
         )
     }
 
-    suspend fun removeFavourite(id: Int): Result<Unit> =
+    override suspend fun removeFavourite(id: Int): Result<Unit> =
         runCatching { favouriteLocalDatasource.deleteFavouriteById(id) }
 
-    suspend fun updateFavourite(entity: FavLocationEntity): Result<Unit> =
+    override suspend fun updateFavourite(entity: FavLocationEntity): Result<Unit> =
         runCatching { favouriteLocalDatasource.updateFavourite(entity) }
 
-    suspend fun isFavourite(lat: Double, lon: Double): Boolean =
+    override suspend fun isFavourite(lat: Double, lon: Double): Boolean =
         favouriteLocalDatasource.isFavourite(lat, lon)
 
-    suspend fun getCurrentWeatherForLocation(
+    override suspend fun getCurrentWeatherForLocation(
         lat: Double,
         lon: Double,
         units: String,
@@ -118,7 +119,7 @@ class WeatherRepository(
         remoteDataSource.getCurrentWeather(lat, lon, apiKey, units, lang)
     }
 
-    suspend fun getForecastForLocation(
+    override suspend fun getForecastForLocation(
         lat: Double,
         lon: Double,
         units: String,
@@ -127,7 +128,7 @@ class WeatherRepository(
         remoteDataSource.getForecast(lat, lon, apiKey, units, lang)
     }
 
-    suspend fun resolveLocationName(
+    override suspend fun resolveLocationName(
         lat: Double,
         lon: Double
     ): Result<Pair<String, String>> = runCatching {

@@ -3,7 +3,7 @@ package com.darkzoom.tempsphere.ui.places.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.darkzoom.tempsphere.data.repository.WeatherRepository
+import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +28,7 @@ sealed class MapPickerUiState {
 
 
 class MapPickerViewModel(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepositoryImp
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapPickerUiState>(MapPickerUiState.Idle)
@@ -81,7 +81,7 @@ class MapPickerViewModel(
     }
 
 
-    class Factory(private val repository: WeatherRepository) : ViewModelProvider.Factory {
+    class Factory(private val repository: WeatherRepositoryImp) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
             MapPickerViewModel(repository) as T
