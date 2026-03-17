@@ -1,6 +1,5 @@
 package com.darkzoom.tempsphere.ui.service
 
-import CurrentWeatherEntity
 import android.R
 import android.app.Notification
 import android.app.NotificationChannel
@@ -14,6 +13,7 @@ import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
 import com.darkzoom.tempsphere.ui.core.App
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -135,7 +135,6 @@ class AlertService : Service() {
     ): Notification {
 
         val fullScreenIntent = Intent().apply {
-            // Replace "MainActivity" if your main entry point has a different name
             setClassName(this@AlertService, "com.darkzoom.tempsphere.MainActivity")
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }

@@ -1,8 +1,9 @@
 package com.darkzoom.tempsphere.data.contract
 
-import CurrentWeatherEntity
-import ForecastItemEntity
+
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
 import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
+import com.darkzoom.tempsphere.data.local.model.entity.ForecastItemEntity
 import com.darkzoom.tempsphere.data.remote.model.CurrentWeatherResponse
 import com.darkzoom.tempsphere.data.remote.model.ForecastResponse
 import kotlinx.coroutines.flow.Flow

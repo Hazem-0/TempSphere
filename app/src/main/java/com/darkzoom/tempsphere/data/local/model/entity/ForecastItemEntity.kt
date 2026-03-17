@@ -1,3 +1,5 @@
+package com.darkzoom.tempsphere.data.local.model.entity
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
