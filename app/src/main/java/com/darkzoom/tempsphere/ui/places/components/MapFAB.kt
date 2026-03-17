@@ -14,7 +14,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
 
 @Composable
@@ -32,6 +34,7 @@ import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
         contentColor = theme.accentPrimary,
         elevation = FloatingActionButtonDefaults.elevation(4.dp)
     ) {
-        Icon(Icons.Rounded.MyLocation, "My location", modifier = Modifier.size(20.dp))
+        Icon(Icons.Rounded.MyLocation,
+            stringResource(R.string.my_location), modifier = Modifier.size(20.dp))
     }
 }

@@ -1,4 +1,4 @@
-package com.darkzoom.tempsphere.ui.home.components
+package com.darkzoom.tempsphere.ui.core.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -9,11 +9,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.common.components.WeatherIllustration
 import com.darkzoom.tempsphere.data.local.model.WeatherType
@@ -27,6 +29,7 @@ fun MainSection(
     description: String,
     weatherType: WeatherType,
     dateLabel: String,
+    unitSymbol: String,
     modifier: Modifier = Modifier
 ) {
     val colors = LocalAppTheme.current
@@ -70,7 +73,7 @@ fun MainSection(
                     )
                 )
                 Text(
-                    text = "°F",
+                    text = unitSymbol,
                     style = TextStyle(
                         fontSize = 34.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -105,7 +108,7 @@ fun MainSection(
             )
             Text("  ·  ", color = colors.textSecondary.copy(alpha = 0.5f), fontSize = 12.sp)
             Text(
-                text = "Feels ${feelsLikeF}°",
+                text = stringResource(R.string.feels, feelsLikeF, unitSymbol),
                 color = colors.textSecondary,
                 fontSize = 12.sp,
                 letterSpacing = 0.2.sp
@@ -118,7 +121,7 @@ fun MainSection(
             modifier = Modifier.padding(top = 6.dp, bottom = 8.dp)
         ) {
             Text(
-                text = "H: ${highF}°",
+                text = stringResource(R.string.high, highF, unitSymbol),
                 color = colors.textPrimary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -126,7 +129,7 @@ fun MainSection(
             )
             Spacer(Modifier.width(16.dp))
             Text(
-                text = "L: ${lowF}°",
+                text = stringResource(R.string.low, lowF, unitSymbol),
                 color = colors.accentSecondary,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.SemiBold,

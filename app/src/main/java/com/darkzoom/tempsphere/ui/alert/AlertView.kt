@@ -113,7 +113,7 @@ fun AlertsScreen(viewModel: AlertViewModel) {
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         Text(
-                            text = "No alerts set",
+                            text = stringResource(R.string.no_alerts_set),
                             color = themeColors.textSecondary,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium

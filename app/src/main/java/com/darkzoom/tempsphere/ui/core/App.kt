@@ -13,10 +13,9 @@ import com.darkzoom.tempsphere.data.repository.AlertRepositoryImp
 import com.darkzoom.tempsphere.data.repository.SettingsRepositoryImp
 import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.AlertManager
-import com.darkzoom.tempsphere.utils.LocationUtil
+import com.darkzoom.tempsphere.utils.LocaleHelper
 import com.darkzoom.tempsphere.utils.LocationUtilImp
 import com.google.android.gms.location.LocationServices
-import kotlin.getValue
 
 class App : Application() {
 
@@ -30,10 +29,7 @@ class App : Application() {
     }
 
     private val weatherLocalDatasource by lazy {
-    WeatherLocalDatasourceImp(
-            db.currentWeatherDao(),
-            db.forecastDao()
-        )
+        WeatherLocalDatasourceImp(db.currentWeatherDao(), db.forecastDao())
     }
 
     private val weatherRemoteDatasource by lazy { WeatherRemoteDatasourceImp() }
@@ -44,12 +40,11 @@ class App : Application() {
 
     val repository by lazy {
         WeatherRepositoryImp(
-            remoteDataSource = weatherRemoteDatasource,
-            localDatasource = weatherLocalDatasource,
+            remoteDataSource         = weatherRemoteDatasource,
+            localDatasource          = weatherLocalDatasource,
             favouriteLocalDatasource = favouriteLocalDatasource
         )
     }
-
 
     private val sharedPrefDatasource: SharedPrefDatasource by lazy {
         SharedPrefDatasourceImp(
@@ -69,5 +64,13 @@ class App : Application() {
 
     val alertRepository by lazy {
         AlertRepositoryImp(alertLocalDatasource, alertManager)
+    }
+
+
+    override fun attachBaseContext(base: Context) {
+
+        val prefs    = base.getSharedPreferences("tempsphere_preferences", Context.MODE_PRIVATE)
+        val language = prefs.getString("language", "English") ?: "English"
+        super.attachBaseContext(LocaleHelper.wrap(base, language))
     }
 }

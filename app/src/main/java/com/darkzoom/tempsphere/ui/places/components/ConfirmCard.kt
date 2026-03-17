@@ -29,10 +29,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
 import com.darkzoom.tempsphere.ui.places.viewmodel.MapPickerUiState
 
@@ -64,7 +66,7 @@ import com.darkzoom.tempsphere.ui.places.viewmodel.MapPickerUiState
             is MapPickerUiState.Resolving -> {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), color = theme.accentPrimary, strokeWidth = 2.dp)
-                    Text("Resolving location…", color = theme.textSecondary, fontSize = 14.sp)
+                    Text(stringResource(R.string.resolving_location), color = theme.textSecondary, fontSize = 14.sp)
                 }
             }
             is MapPickerUiState.Resolved -> {
@@ -100,15 +102,26 @@ import com.darkzoom.tempsphere.ui.places.viewmodel.MapPickerUiState
                             border = BorderStroke(1.dp, theme.glassBorder),
                             colors = ButtonDefaults.outlinedButtonColors(contentColor = theme.textSecondary)
                         ) {
-                            Text("Cancel", fontSize = 14.sp)
+                            Text(stringResource(R.string.clear), fontSize = 14.sp)
                         }
                         Button(
                             onClick = onConfirm,
                             modifier = Modifier
                                 .weight(1f)
-                                .shadow(8.dp, RoundedCornerShape(14.dp), spotColor = theme.accentPrimary)
+                                .shadow(
+                                    8.dp,
+                                    RoundedCornerShape(14.dp),
+                                    spotColor = theme.accentPrimary
+                                )
                                 .clip(RoundedCornerShape(14.dp))
-                                .background(Brush.linearGradient(listOf(theme.accentPrimary, theme.accentSecondary))),
+                                .background(
+                                    Brush.linearGradient(
+                                        listOf(
+                                            theme.accentPrimary,
+                                            theme.accentSecondary
+                                        )
+                                    )
+                                ),
                             colors = ButtonDefaults.buttonColors(containerColor = androidx.compose.ui.graphics.Color.Transparent),
                             shape = RoundedCornerShape(14.dp),
                             contentPadding = PaddingValues(0.dp)
@@ -119,7 +132,7 @@ import com.darkzoom.tempsphere.ui.places.viewmodel.MapPickerUiState
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)
                             ) {
                                 Icon(Icons.Rounded.Check, null, modifier = Modifier.size(16.dp))
-                                Text("Save Place", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                                Text(stringResource(R.string.save_place), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                             }
                         }
                     }
@@ -128,7 +141,7 @@ import com.darkzoom.tempsphere.ui.places.viewmodel.MapPickerUiState
             is MapPickerUiState.Saving -> {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), color = theme.accentPrimary, strokeWidth = 2.dp)
-                    Text("Saving…", color = theme.textSecondary, fontSize = 14.sp)
+                    Text(stringResource(R.string.saving), color = theme.textSecondary, fontSize = 14.sp)
                 }
             }
             else -> {}

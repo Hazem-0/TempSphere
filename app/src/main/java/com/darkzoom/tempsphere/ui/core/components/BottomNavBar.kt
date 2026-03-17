@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,6 +83,7 @@ fun CustomNavItem(
     onClick: () -> Unit
 ) {
     val theme = LocalAppTheme.current
+    val title = stringResource(screen.titleRes)
 
     val activeColor = theme.accentPrimary
     val inactiveColor = theme.textSecondary.copy(alpha = 0.5f)
@@ -119,13 +121,13 @@ fun CustomNavItem(
     ) {
         Icon(
             imageVector = screen.icon,
-            contentDescription = screen.title,
+            contentDescription = title,
             tint = if (isActive) activeColor else inactiveColor,
             modifier = Modifier.size(22.dp)
         )
 
         Text(
-            text = screen.title,
+            text = title,
             color = textColor,
             fontSize = 10.sp,
             fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,

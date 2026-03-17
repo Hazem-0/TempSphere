@@ -22,6 +22,7 @@ import com.darkzoom.tempsphere.data.local.model.HourlyWeather
 @Composable
 fun HourlyForecastRow(
     items: List<HourlyWeather>,
+    unitSymbol: String,
     modifier: Modifier = Modifier
 ) {
     LazyRow(
@@ -30,13 +31,13 @@ fun HourlyForecastRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         itemsIndexed(items) { index, item ->
-            HourlyCard(item = item, isNow = index == 0)
+            HourlyCard(item = item, isNow = index == 0, unitSymbol = unitSymbol)
         }
     }
 }
 
 @Composable
-private fun HourlyCard(item: HourlyWeather, isNow: Boolean) {
+private fun HourlyCard(item: HourlyWeather, isNow: Boolean, unitSymbol: String) {
     val colors = LocalAppTheme.current
     val shape = RoundedCornerShape(18.dp)
 
@@ -75,7 +76,7 @@ private fun HourlyCard(item: HourlyWeather, isNow: Boolean) {
         WeatherIllustration(type = item.type, size = 34.dp)
 
         Text(
-            text = "${item.tempF}°",
+            text = "${item.tempF}$unitSymbol",
             color = colors.textPrimary,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold

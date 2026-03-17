@@ -46,11 +46,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.SearchResult
 import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
 
@@ -140,7 +142,7 @@ import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
         onValueChange = onQueryChange,
         placeholder = {
             Text(
-                "Search city, region…",
+                stringResource(R.string.search_city_region),
                 color = theme.textSecondary.copy(alpha = 0.5f),
                 fontSize = 15.sp
             )
@@ -164,14 +166,16 @@ import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
             ) { s ->
                 when (s) {
                     "loading" -> CircularProgressIndicator(
-                        modifier = Modifier.size(18.dp).padding(2.dp),
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(2.dp),
                         color = theme.accentPrimary,
                         strokeWidth = 2.dp
                     )
                     "clear" -> IconButton(onClick = onClear) {
                         Icon(
                             Icons.Rounded.Close,
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.clear),
                             tint = theme.textSecondary.copy(alpha = 0.6f),
                             modifier = Modifier.size(18.dp)
                         )

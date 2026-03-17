@@ -24,10 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 
 @Composable
@@ -57,7 +59,7 @@ fun LocationSearchBar(
         ) {
             Icon(
                 imageVector        = Icons.Rounded.Search,
-                contentDescription = "Search",
+                contentDescription = stringResource(R.string.search),
                 tint               = theme.textSecondary.copy(alpha = 0.5f),
                 modifier           = Modifier.size(20.dp)
             )
@@ -66,7 +68,7 @@ fun LocationSearchBar(
             Box(modifier = Modifier.weight(1f)) {
                 if (query.isEmpty()) {
                     Text(
-                        "Search cities, regions…",
+                        stringResource(R.string.search_cities_regions),
                         color    = theme.textSecondary.copy(alpha = 0.45f),
                         fontSize = 15.sp
                     )
@@ -83,14 +85,14 @@ fun LocationSearchBar(
             if (query.isNotEmpty()) {
                 Icon(
                     imageVector        = Icons.Rounded.Clear,
-                    contentDescription = "Clear",
+                    contentDescription = stringResource(R.string.clear),
                     tint               = theme.textSecondary.copy(alpha = 0.5f),
                     modifier           = Modifier
                         .size(18.dp)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
-                            indication        = null,
-                            onClick           = onClearClick
+                            indication = null,
+                            onClick = onClearClick
                         )
                 )
             }
@@ -119,7 +121,7 @@ fun LocationSearchBar(
                             .fillMaxWidth()
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
-                                indication        = null
+                                indication = null
                             ) { onSuggestionClick(suggestion) }
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically

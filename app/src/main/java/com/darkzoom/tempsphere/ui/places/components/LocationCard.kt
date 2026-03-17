@@ -17,9 +17,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.SavedLocation
 import com.darkzoom.tempsphere.ui.common.components.WeatherIllustration
 
@@ -107,7 +109,7 @@ fun LocationCard(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "H:${location.high}° · L:${location.low}°",
+                        text = stringResource(R.string.high_low, location.high, location.low),
                         color = Color.White.copy(alpha = 0.5f),
                         fontSize = 12.sp
                     )

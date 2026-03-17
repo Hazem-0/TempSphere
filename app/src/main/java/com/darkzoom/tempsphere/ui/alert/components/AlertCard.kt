@@ -1,5 +1,6 @@
 package com.darkzoom.tempsphere.ui.alert.components
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -16,9 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.AlertModel
 import com.darkzoom.tempsphere.data.local.model.RepeatMode
 import com.darkzoom.tempsphere.ui.common.components.GlassCard
@@ -80,7 +84,7 @@ fun AlertCard(
                     )
                 )
                 Text(
-                    text = buildSubtitle(alert.alertType, alert.repeatMode),
+                    text = buildSubtitle(alert.alertType, alert.repeatMode , context = LocalContext.current),
                     color = themeColors.textSecondary.copy(alpha = cardTransparency),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
                     modifier = Modifier.padding(top = 3.dp)
@@ -97,7 +101,7 @@ fun AlertCard(
                 IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
                     Icon(
                         imageVector = Icons.Rounded.DeleteOutline,
-                        contentDescription = "Delete alert",
+                        contentDescription = stringResource(R.string.delete_alert),
                         tint = themeColors.pressureIcon,
                         modifier = Modifier.size(20.dp)
                     )
@@ -107,5 +111,5 @@ fun AlertCard(
     }
 }
 
-private fun buildSubtitle(alertType: String, repeatMode: RepeatMode): String =
-    "$alertType  ·  ${repeatMode.displayLabel()}"
+private fun buildSubtitle(alertType: String, repeatMode: RepeatMode , context : Context): String =
+    "$alertType  ·  ${repeatMode.displayLabel(context = context)}"

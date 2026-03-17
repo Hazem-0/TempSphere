@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.darkzoom.tempsphere.R
 
 @Composable
 fun GlassToggle(
@@ -30,7 +32,7 @@ fun GlassToggle(
     val thumbOffset by animateDpAsState(
         targetValue = if (enabled) 23.dp else 2.dp,
         animationSpec = tween(300),
-        label = "toggle_offset"
+        label = stringResource(R.string.toggle_offset)
     )
 
     val onSurface = MaterialTheme.colorScheme.onSurface
@@ -47,7 +49,12 @@ fun GlassToggle(
             )
             .background(
                 if (enabled) Brush.linearGradient(listOf(color, color.copy(alpha = 0.8f)))
-                else Brush.linearGradient(listOf(onSurface.copy(alpha = 0.12f), onSurface.copy(alpha = 0.12f)))
+                else Brush.linearGradient(
+                    listOf(
+                        onSurface.copy(alpha = 0.12f),
+                        onSurface.copy(alpha = 0.12f)
+                    )
+                )
             )
             .border(
                 1.dp,
