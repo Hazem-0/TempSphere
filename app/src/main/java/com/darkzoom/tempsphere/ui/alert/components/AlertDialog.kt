@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -31,11 +32,11 @@ fun ShowAlertDialog(
     onSave: (timeText: String, type: String, hour: Int, minute: Int, repeatMode: RepeatMode) -> Unit
 ) {
     val themeColors = LocalAppTheme.current
-
+    val context = LocalContext.current
     var selectedHour   by remember { mutableIntStateOf(8) }
     var selectedMinute by remember { mutableIntStateOf(0) }
     var selectedTime   by remember { mutableStateOf(formatTime(8, 0)) }
-    var selectedType   by remember { mutableStateOf("Notification") }
+    var selectedType   by remember { mutableStateOf(context.getString(R.string.notification)) }
     var selectedRepeat by remember { mutableStateOf(RepeatMode.DAILY) }
     var showTimePicker by remember { mutableStateOf(false) }
 
@@ -157,10 +158,10 @@ fun ShowAlertDialog(
                 SectionLabel(stringResource(R.string.repeat))
 
                 OptionPicker(
-                    options     = RepeatMode.all.map { it.displayLabel() },
-                    selected    = selectedRepeat.displayLabel(),
+                    options     = RepeatMode.all.map { it.displayLabel(context) },
+                    selected    = selectedRepeat.displayLabel(context),
                     onSelect    = { label ->
-                        selectedRepeat = RepeatMode.all.first { it.displayLabel() == label }
+                        selectedRepeat = RepeatMode.all.first { it.displayLabel(context) == label }
                     },
                     accentColor = themeColors.accentPrimary,
                     modifier    = Modifier.padding(horizontal = 16.dp)

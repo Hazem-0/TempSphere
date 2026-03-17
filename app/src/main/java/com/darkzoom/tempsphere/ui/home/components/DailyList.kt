@@ -21,6 +21,7 @@ import com.darkzoom.tempsphere.ui.common.components.WeatherIllustration
 @Composable
 fun DailyForecastList(
     items: List<DailyWeather>,
+    unitSymbol: String,
     modifier: Modifier = Modifier
 ) {
     if (items.isEmpty()) return
@@ -37,14 +38,15 @@ fun DailyForecastList(
             DailyRow(
                 item = item,
                 isToday = index == 0,
-                barFraction = (item.high - globalMin).toFloat() / range
+                barFraction = (item.high - globalMin).toFloat() / range,
+                unitSymbol = unitSymbol
             )
         }
     }
 }
 
 @Composable
-private fun DailyRow(item: DailyWeather, isToday: Boolean, barFraction: Float) {
+private fun DailyRow(item: DailyWeather, isToday: Boolean, barFraction: Float, unitSymbol: String) {
     val colors = LocalAppTheme.current
     val shape = RoundedCornerShape(12.dp)
 
@@ -91,7 +93,7 @@ private fun DailyRow(item: DailyWeather, isToday: Boolean, barFraction: Float) {
         Spacer(Modifier.weight(1f))
 
         Text(
-            text = "${item.low}°",
+            text = "${item.low}$unitSymbol",
             color = colors.textSecondary,
             fontSize = 13.sp,
             textAlign = TextAlign.End,
@@ -121,7 +123,7 @@ private fun DailyRow(item: DailyWeather, isToday: Boolean, barFraction: Float) {
         Spacer(Modifier.width(8.dp))
 
         Text(
-            text = "${item.high}°",
+            text = "${item.high}$unitSymbol",
             color = colors.textPrimary,
             fontSize = 13.sp,
             fontWeight = FontWeight.SemiBold,

@@ -1,10 +1,11 @@
 package com.darkzoom.tempsphere.data.local.datasource
 
-import CurrentWeatherEntity
-import ForecastItemEntity
+
 import com.darkzoom.tempsphere.data.contract.WeatherLocalDatasource
 import com.darkzoom.tempsphere.data.local.dao.CurrentWeatherDao
 import com.darkzoom.tempsphere.data.local.dao.ForecastDao
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
+import com.darkzoom.tempsphere.data.local.model.entity.ForecastItemEntity
 
 import kotlinx.coroutines.flow.Flow
 

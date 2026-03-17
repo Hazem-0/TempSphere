@@ -10,22 +10,22 @@ plugins {
 
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").inputStream())
-val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
-val mapsApiKey = properties.getProperty("MAPS_API_KEY") ?: ""
+val apiKey    = properties.getProperty("WEATHER_API_KEY") ?: ""
+val mapsApiKey = properties.getProperty("MAPS_API_KEY")   ?: ""
 
 android {
-    namespace = "com.darkzoom.tempsphere"
-    compileSdk = 36
+    namespace   = "com.darkzoom.tempsphere"
+    compileSdk  = 35
 
     defaultConfig {
         applicationId = "com.darkzoom.tempsphere"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        minSdk        = 24
+        targetSdk     = 35
+        versionCode   = 1
+        versionName   = "1.0"
 
         buildConfigField("String", "BASE_URL", "\"https://api.openweathermap.org/data/2.5/\"")
-        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        buildConfigField("String", "API_KEY",  "\"$apiKey\"")
 
         manifestPlaceholders["mapsApiKey"] = mapsApiKey
 
@@ -48,7 +48,7 @@ android {
     }
 
     buildFeatures {
-        compose = true
+        compose     = true
         buildConfig = true
     }
 }
@@ -57,6 +57,11 @@ kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_11)
     }
+}
+
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -69,9 +74,9 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.media3.common.ktx)
+
+    // Testing
     testImplementation(libs.junit)
-    testImplementation(libs.junit.junit)
-    testImplementation(libs.junit.junit)
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,28 +84,41 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    implementation(libs.play.services.location)
 
+    // Location & Maps
+    implementation(libs.play.services.location)
     implementation(libs.play.services.maps)
 
+    // Background work
     implementation(libs.work.runtime.ktx)
+
+    // Network
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.gson)
     implementation(libs.okhttp3)
     implementation(libs.logging.interceptor)
+
+    // Room
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Image loading
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    // Coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
+    // Compose extras
     implementation(libs.androidx.compose.material.icons.extended)
-
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
+
+    // Test utilities
     testImplementation(libs.turbine)
     testImplementation(libs.mocck)
     testImplementation(libs.mocck.agent)

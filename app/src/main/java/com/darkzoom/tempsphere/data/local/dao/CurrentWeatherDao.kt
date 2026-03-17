@@ -1,10 +1,10 @@
 package com.darkzoom.tempsphere.data.local.dao
 
-import CurrentWeatherEntity
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

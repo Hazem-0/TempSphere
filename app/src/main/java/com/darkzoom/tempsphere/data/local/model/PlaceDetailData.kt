@@ -16,5 +16,7 @@ data class PlaceDetailData(
     val hourly: List<HourlyWeather>,
     val daily: List<DailyWeather>,
     val dateLabel: String,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val unitSymbol: String = "°F",
+    val windUnit: String = "m/s"
 )

@@ -1,5 +1,6 @@
 package com.darkzoom.tempsphere.ui.core
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -9,15 +10,18 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -34,22 +38,38 @@ import com.darkzoom.tempsphere.ui.core.Theme.AfternoonColors
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.core.Theme.MorningColors
 import com.darkzoom.tempsphere.ui.core.Theme.NightColors
+import com.darkzoom.tempsphere.ui.core.components.BottomNavBar
 import com.darkzoom.tempsphere.ui.core.components.Screen
 import com.darkzoom.tempsphere.ui.home.HomeScreen
 import com.darkzoom.tempsphere.ui.home.HomeViewModel
-import com.darkzoom.tempsphere.ui.core.components.BottomNavBar
 import com.darkzoom.tempsphere.ui.places.MapPickerActivity
-import com.darkzoom.tempsphere.ui.places.view.PlacesView
-import com.darkzoom.tempsphere.ui.places.viewmodel.PlacesViewModel
+import com.darkzoom.tempsphere.ui.places.MapPickerActivity.Companion.EXTRA_MODE
+import com.darkzoom.tempsphere.ui.places.MapPickerActivity.Companion.MODE_PLACES
+import com.darkzoom.tempsphere.ui.places.MapPickerActivity.Companion.MODE_SETTINGS
+import com.darkzoom.tempsphere.ui.places.MapPickerActivity.Companion.RESULT_PLACE_SAVED
 import com.darkzoom.tempsphere.ui.places.view.PlaceDetailView
+import com.darkzoom.tempsphere.ui.places.view.PlacesView
+import com.darkzoom.tempsphere.ui.places.viewmodel.PlaceDetailViewModel
+import com.darkzoom.tempsphere.ui.places.viewmodel.PlacesViewModel
+import com.darkzoom.tempsphere.ui.settings.SettingsEvent
 import com.darkzoom.tempsphere.ui.settings.SettingsScreen
 import com.darkzoom.tempsphere.ui.settings.SettingsViewModel
 import com.darkzoom.tempsphere.ui.settings.SettingsViewModelFactory
 import com.darkzoom.tempsphere.ui.theme.TempSphereTheme
+import com.darkzoom.tempsphere.utils.LocaleHelper
+import com.darkzoom.tempsphere.utils.toApiLang
+import com.darkzoom.tempsphere.utils.toApiUnits
+import kotlinx.coroutines.delay
 import java.util.Calendar
-import com.darkzoom.tempsphere.ui.places.viewmodel.PlaceDetailViewModel
 
 class MainActivity : ComponentActivity() {
+
+    override fun attachBaseContext(base: Context) {
+        val prefs    = base.getSharedPreferences("tempsphere_preferences", Context.MODE_PRIVATE)
+        val language = prefs.getString("language", "English") ?: "English"
+        super.attachBaseContext(LocaleHelper.wrap(base, language))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,58 +78,90 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
-        val app               = application as App
-        val repository        = app.repository
-        val locationTracker   = app.locationTracker
+        val app                = application as App
+        val repository         = app.repository
+        val locationTracker    = app.locationTracker
         val settingsRepository = app.settingsRepository
-        val alertRepository   = app.alertRepository
+        val alertRepository    = app.alertRepository
 
         setContent {
-            val currentHour   = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
             val context       = LocalContext.current
             val navController = rememberNavController()
+
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute  = navBackStackEntry?.destination?.route
             val showBottomBar = currentRoute != Screen.PlaceDetail.route
-
-            val appTheme = when (currentHour) {
-                in 6..11  -> MorningColors
-                in 12..17 -> AfternoonColors
-                else      -> NightColors
+            var currentHour by remember {
+                mutableIntStateOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY))
             }
-
-            val mapPickerLauncher = rememberLauncherForActivityResult(
-                ActivityResultContracts.StartActivityForResult()
-            ) { result ->
-                if (result.resultCode == MapPickerActivity.RESULT_PLACE_SAVED) {
-                    navController.navigate(Screen.Places.route) {
-                        launchSingleTop = true
-                    }
+            LaunchedEffect(Unit) {
+                while (true) {
+                    val secsLeft = 60 - Calendar.getInstance().get(Calendar.SECOND)
+                    delay(secsLeft * 1_000L)
+                    currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
                 }
             }
 
+            val timeSlot = when (currentHour) {
+                in 6..11  -> "morning"
+                in 12..17 -> "afternoon"
+                else      -> "night"
+            }
+
+            val appTheme = when (timeSlot) {
+                "morning"   -> MorningColors
+                "afternoon" -> AfternoonColors
+                else        -> NightColors
+            }
+
+            val currentLanguage by settingsRepository.languageFlow.collectAsState()
+            val layoutDirection = if (currentLanguage == "Arabic")
+                LayoutDirection.Rtl else LayoutDirection.Ltr
+
+            val placesMapLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                if (result.resultCode == RESULT_PLACE_SAVED) {
+                    navController.navigate(Screen.Places.route) { launchSingleTop = true }
+                }
+            }
+
+            val settingsMapLauncher = rememberLauncherForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {  }
+
             TempSphereTheme(darkTheme = true) {
-                CompositionLocalProvider(LocalAppTheme provides appTheme) {
+                CompositionLocalProvider(
+                    LocalAppTheme        provides appTheme,
+                    LocalLayoutDirection provides layoutDirection
+                ) {
                     Box(modifier = Modifier.fillMaxSize()) {
-                        when (currentHour) {
-                            in 6..11  -> MorningBackground()
-                            in 12..17 -> AfterNoonBackground()
-                            else      -> NightBackground()
+
+                        Crossfade(
+                            targetState   = timeSlot,
+                            animationSpec = tween(durationMillis = 1_500),
+                            label         = "background_crossfade"
+                        ) { slot ->
+                            when (slot) {
+                                "morning"   -> MorningBackground()
+                                "afternoon" -> AfterNoonBackground()
+                                else        -> NightBackground()
+                            }
                         }
 
                         Scaffold(
                             bottomBar = {
                                 if (showBottomBar) BottomNavBar(navController = navController)
                             },
-                            containerColor   = androidx.compose.ui.graphics.Color.Transparent,
+                            containerColor      = androidx.compose.ui.graphics.Color.Transparent,
                             contentWindowInsets = WindowInsets(0, 0, 0, 0)
                         ) { paddingValues ->
-
                             NavHost(
                                 navController    = navController,
                                 startDestination = Screen.Home.route,
                                 modifier         = Modifier.padding(paddingValues)
                             ) {
+
                                 composable(Screen.Home.route) {
                                     val homeViewModel: HomeViewModel = viewModel(
                                         factory = HomeViewModel.Factory(
@@ -125,25 +177,28 @@ class MainActivity : ComponentActivity() {
                                     val placesViewModel: PlacesViewModel = viewModel(
                                         factory = PlacesViewModel.Factory(
                                             repository = repository,
-                                            units      = "metric",
-                                            lang       = "en"
+                                            units      = settingsRepository.tempUnit.toApiUnits(),
+                                            lang       = settingsRepository.language.toApiLang(),
+                                            app
                                         )
                                     )
                                     PlacesView(
-                                        viewModel         = placesViewModel,
-                                        onLocationClick   = { id ->
+                                        viewModel          = placesViewModel,
+                                        onLocationClick    = { id ->
                                             navController.navigate(Screen.PlaceDetail.createRoute(id))
                                         },
                                         onAddLocationClick = {
-                                            mapPickerLauncher.launch(
-                                                Intent(context, MapPickerActivity::class.java)
+                                            placesMapLauncher.launch(
+                                                Intent(context, MapPickerActivity::class.java).apply {
+                                                    putExtra(EXTRA_MODE, MODE_PLACES)
+                                                }
                                             )
                                         }
                                     )
                                 }
 
                                 composable(
-                                    route = Screen.PlaceDetail.route,
+                                    route     = Screen.PlaceDetail.route,
                                     arguments = listOf(
                                         navArgument(Screen.PlaceDetail.ARG_ID) {
                                             type = NavType.IntType
@@ -151,13 +206,15 @@ class MainActivity : ComponentActivity() {
                                     )
                                 ) { backStackEntry ->
                                     val favouriteId = backStackEntry.arguments
-                                        ?.getInt(Screen.PlaceDetail.ARG_ID) ?: return@composable
+                                        ?.getInt(Screen.PlaceDetail.ARG_ID)
+                                        ?: return@composable
                                     val detailViewModel: PlaceDetailViewModel = viewModel(
                                         factory = PlaceDetailViewModel.Factory(
-                                            favouriteId  = favouriteId,
-                                            repository   = repository,
-                                            units        = "metric",
-                                            lang         = "en"
+                                            favouriteId = favouriteId,
+                                            repository  = repository,
+                                            units       = settingsRepository.tempUnit.toApiUnits(),
+                                            lang        = settingsRepository.language.toApiLang(),
+                                            context     = app
                                         )
                                     )
                                     PlaceDetailView(
@@ -175,9 +232,37 @@ class MainActivity : ComponentActivity() {
 
                                 composable(Screen.Settings.route) {
                                     val settingsViewModel: SettingsViewModel = viewModel(
-                                        factory = SettingsViewModelFactory(context)
+                                        factory = SettingsViewModelFactory(app)
                                     )
-                                    SettingsScreen(viewModel = settingsViewModel)
+
+                                    LaunchedEffect(settingsViewModel) {
+                                        settingsViewModel.events.collect { event ->
+                                            when (event) {
+                                                is SettingsEvent.OpenMapPicker -> {
+                                                    settingsMapLauncher.launch(
+                                                        Intent(app, MapPickerActivity::class.java).apply {
+                                                            putExtra(EXTRA_MODE, MODE_SETTINGS)
+                                                        }
+                                                    )
+                                                }
+                                                is SettingsEvent.RestartActivity -> {
+
+                                                    recreate()
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    SettingsScreen(
+                                        viewModel       = settingsViewModel,
+                                        onOpenMapPicker = {
+                                            settingsMapLauncher.launch(
+                                                Intent(app, MapPickerActivity::class.java).apply {
+                                                    putExtra(EXTRA_MODE, MODE_SETTINGS)
+                                                }
+                                            )
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -187,3 +272,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

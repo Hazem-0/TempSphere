@@ -1,6 +1,5 @@
 package com.darkzoom.tempsphere.ui.worker
 
-import CurrentWeatherEntity
 import android.Manifest
 //noinspection SuspiciousImport
 import android.R
@@ -14,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
 import com.darkzoom.tempsphere.ui.core.App
 import com.darkzoom.tempsphere.utils.toApiLang
 import com.darkzoom.tempsphere.utils.toApiUnits
@@ -28,15 +28,16 @@ class NotificationWorker(
     override suspend fun doWork(): Result {
         createNotificationChannel()
 
+
         val alertId = inputData.getInt(KEY_ALERT_ID, DEFAULT_NOTIF_ID)
-        val (title, body, expanded) = buildWeatherStrings()
+        val (title, body, expanded) = buildWeatherStrings(context)
         showNotification(alertId, title, body, expanded)
 
         return Result.success()
     }
 
 
-    private suspend fun buildWeatherStrings(): Triple<String, String, String> {
+    private suspend fun buildWeatherStrings(context: Context): Triple<String, String, String> {
         return try {
             val app        = context.applicationContext as App
             val units      = app.settingsRepository.tempUnit.toApiUnits()
@@ -56,10 +57,11 @@ class NotificationWorker(
                 .firstOrNull()
                 ?: return fallbackStrings()
 
+
             Triple(
-                "🌤 TempSphere · ${entity.cityName}",
+                context.getString(com.darkzoom.tempsphere.R.string.tempsphere, entity.cityName),
                 "${entity.temp.toInt()}$unitSymbol }",
-                buildExpandedText(entity, unitSymbol)
+                buildExpandedText(context,entity, unitSymbol )
             )
         } catch (e: Exception) {
             fallbackStrings()
@@ -67,9 +69,9 @@ class NotificationWorker(
     }
 
     private fun fallbackStrings() = Triple(
-        "🌤 TempSphere Weather Alert",
-        "Check the latest weather conditions.",
-        "Open TempSphere to see your current forecast."
+        context.getString(com.darkzoom.tempsphere.R.string.tempsphere_weather_alert),
+        context.getString(com.darkzoom.tempsphere.R.string.check_the_latest_weather_conditions),
+        context.getString(com.darkzoom.tempsphere.R.string.open_tempsphere_to_see_your_current_forecast)
     )
 
 
@@ -111,11 +113,16 @@ class NotificationWorker(
 }
 
 
-
-
-
-private fun buildExpandedText(entity: CurrentWeatherEntity, unitSymbol: String): String =
+private fun buildExpandedText(
+    context: Context,
+    entity: CurrentWeatherEntity,
+    unitSymbol: String
+): String =
     "${entity.temp.toInt()}$unitSymbol " +
-            "Feels like ${entity.feelsLike.toInt()}$unitSymbol\n" +
-            "↑ ${entity.tempMax.toInt()}$unitSymbol  ↓ ${entity.tempMin.toInt()}$unitSymbol · " +
+            context.getString(
+                com.darkzoom.tempsphere.R.string.feels_like,
+                entity.feelsLike.toInt(),
+                unitSymbol
+            ) +
+            " ↑ ${entity.tempMax.toInt()}$unitSymbol  ↓ ${entity.tempMin.toInt()}$unitSymbol · " +
             "💧 ${entity.humidity}%  💨 ${entity.windSpeed} m/s"

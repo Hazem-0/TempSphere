@@ -1,4 +1,4 @@
-package com.darkzoom.tempsphere.ui.home.components
+package com.darkzoom.tempsphere.ui.core.components
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -12,14 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.common.components.GlassCard
 import com.darkzoom.tempsphere.data.local.model.DailyWeather
 import com.darkzoom.tempsphere.data.local.model.ForecastTab
 import com.darkzoom.tempsphere.data.local.model.HourlyWeather
+import com.darkzoom.tempsphere.ui.home.components.DailyForecastList
+import com.darkzoom.tempsphere.ui.home.components.ForecastTabs
+import com.darkzoom.tempsphere.ui.home.components.HourlyForecastRow
+import com.darkzoom.tempsphere.ui.home.components.MetricCard
 
 @Composable
 fun GlassSection(
@@ -31,6 +37,8 @@ fun GlassSection(
     windMs: Float,
     pressureHpa: Int,
     cloudinessPct: Int,
+    unitSymbol: String,
+    windUnit: String,
     modifier: Modifier = Modifier
 ) {
     val colors = LocalAppTheme.current
@@ -62,11 +70,19 @@ fun GlassSection(
         AnimatedContent(
             targetState = activeTab,
             transitionSpec = { fadeIn() togetherWith fadeOut() },
-            label = "forecast_tab"
+            label = stringResource(R.string.forecast_tab)
         ) { tab ->
             when (tab) {
-                ForecastTab.HOURLY -> HourlyForecastRow(items = hourlyItems, modifier = Modifier.padding(bottom = 4.dp))
-                ForecastTab.WEEKLY -> DailyForecastList(items = dailyItems, modifier = Modifier.padding(bottom = 4.dp))
+                ForecastTab.HOURLY -> HourlyForecastRow(
+                    items = hourlyItems,
+                    unitSymbol = unitSymbol,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                ForecastTab.WEEKLY -> DailyForecastList(
+                    items = dailyItems,
+                    unitSymbol = unitSymbol,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
             }
         }
 
@@ -79,7 +95,7 @@ fun GlassSection(
         )
 
         Text(
-            text = "CONDITIONS",
+            text = stringResource(R.string.conditions),
             color = colors.textSecondary,
             fontSize = 10.sp,
             fontWeight = FontWeight.SemiBold,
@@ -91,7 +107,8 @@ fun GlassSection(
             humidity = humidity,
             windMs = windMs,
             pressureHpa = pressureHpa,
-            cloudinessPct = cloudinessPct
+            cloudinessPct = cloudinessPct,
+            windUnit = windUnit
         )
     }
 }

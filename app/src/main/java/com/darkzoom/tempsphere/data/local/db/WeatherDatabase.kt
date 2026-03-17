@@ -10,6 +10,9 @@ import com.darkzoom.tempsphere.data.local.dao.FavouriteLocationDao
 import com.darkzoom.tempsphere.data.local.dao.ForecastDao
 import com.darkzoom.tempsphere.data.local.model.entity.AlertEntity
 import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
+import com.darkzoom.tempsphere.data.local.model.entity.ForecastItemEntity
+
 
 @Database(
     entities = [
@@ -18,7 +21,7 @@ import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
         AlertEntity::class,
         FavLocationEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class WeatherDatabase : RoomDatabase() {

@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.SearchResult
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
 import com.darkzoom.tempsphere.ui.places.components.BottomConfirmCard
@@ -48,9 +49,10 @@ import java.util.Locale
 import kotlin.coroutines.resume
 
 @Composable
- fun MapPickerScreen(
+fun MapPickerScreen(
     viewModel: MapPickerViewModel,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    onConfirm: () -> Unit = { viewModel.saveCurrentLocation() }
 ) {
     val theme = LocalAppTheme.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -109,7 +111,7 @@ import kotlin.coroutines.resume
             .distinctBy { "${String.format("%.2f", it.lat)},${String.format("%.2f", it.lon)}" }
             .take(6)
         isSearching = false
-        if (results.isEmpty()) noResults = "No results for \"$query\""
+        if (results.isEmpty()) noResults = context.getString(R.string.no_results_for, query)
     }
 
     val permLauncher = rememberLauncherForActivityResult(
@@ -243,7 +245,7 @@ import kotlin.coroutines.resume
             BottomConfirmCard(
                 uiState = uiState,
                 theme = theme,
-                onConfirm = { viewModel.saveCurrentLocation() },
+                onConfirm = onConfirm,
                 onDismiss = { viewModel.resetError() }
             )
         }

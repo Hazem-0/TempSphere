@@ -28,12 +28,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.SearchResult
 import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
@@ -71,7 +73,7 @@ fun PlacesView(
                     ) {
                         Text(state.message, color = theme.textSecondary, fontSize = 14.sp)
                         TextButton(onClick = { viewModel.refreshAll() }) {
-                            Text("Retry", color = theme.accentPrimary, fontWeight = FontWeight.SemiBold)
+                            Text(stringResource(R.string.retry), color = theme.accentPrimary, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
@@ -102,11 +104,19 @@ fun PlacesView(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(Brush.linearGradient(listOf(theme.accentPrimary, theme.accentSecondary)))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                theme.accentPrimary,
+                                theme.accentSecondary
+                            )
+                        )
+                    )
                     .border(1.dp, theme.accentPrimary.copy(alpha = 0.4f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Rounded.Add, "Add place", tint = Color.White, modifier = Modifier.size(24.dp))
+                Icon(Icons.Rounded.Add,
+                    stringResource(R.string.add_place), tint = Color.White, modifier = Modifier.size(24.dp))
             }
         }
     }
@@ -137,7 +147,7 @@ private fun SuccessContent(
                         .padding(horizontal = 20.dp, vertical = 16.dp)
                 ) {
                     Text(
-                        "My Places",
+                        stringResource(R.string.my_places),
                         color         = theme.textPrimary,
                         fontSize      = 26.sp,
                         fontWeight    = FontWeight.ExtraBold,
@@ -145,7 +155,7 @@ private fun SuccessContent(
                     )
                     val count = state.savedLocations.size
                     Text(
-                        "$count location${if (count != 1) "s" else ""} saved",
+                        stringResource(R.string.location_saved, count, if (count != 1) "s" else ""),
                         color    = theme.textSecondary.copy(alpha = 0.6f),
                         fontSize = 13.sp
                     )
@@ -195,13 +205,8 @@ private fun EmptyContent(theme: AppThemeColors) {
             ) {
                 Icon(Icons.Rounded.LocationOn, null, tint = theme.accentPrimary, modifier = Modifier.size(32.dp))
             }
-            Text("No saved places yet", color = theme.textPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-            Text(
-                "Tap + to add your favourite cities",
-                color     = theme.textSecondary.copy(alpha = 0.55f),
-                fontSize  = 13.sp,
-                textAlign = TextAlign.Center
-            )
+            Text(stringResource(R.string.no_saved_places_yet), color = theme.textPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+
         }
     }
 }
@@ -244,7 +249,7 @@ private fun SwipeToDeleteCard(
             ) {
                 Icon(
                     imageVector        = Icons.Rounded.Delete,
-                    contentDescription = "Delete",
+                    contentDescription = stringResource(R.string.delete),
                     tint               = Color.White,
                     modifier           = Modifier
                         .padding(end = 26.dp)
@@ -264,13 +269,13 @@ private fun SwipeToDeleteCard(
                             scope.launch {
                                 if (offsetX.value < -threshold && itemWidthPx > 0) {
                                     offsetX.animateTo(
-                                        targetValue   = -itemWidthPx.toFloat(),
+                                        targetValue = -itemWidthPx.toFloat(),
                                         animationSpec = tween(durationMillis = 250)
                                     )
                                     onDelete()
                                 } else {
                                     offsetX.animateTo(
-                                        targetValue   = 0f,
+                                        targetValue = 0f,
                                         animationSpec = tween(durationMillis = 300)
                                     )
                                 }

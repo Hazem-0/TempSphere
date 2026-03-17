@@ -3,6 +3,7 @@ package com.darkzoom.tempsphere.ui.places.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.PlaceDetailData
 import com.darkzoom.tempsphere.data.repository.WeatherRepositoryImp
 import com.darkzoom.tempsphere.utils.toPlaceDetailData
@@ -22,7 +23,8 @@ class PlaceDetailViewModel(
     private val favouriteId: Int,
     private val repository: WeatherRepositoryImp,
     private val units: String = "metric",
-    private val lang: String = "en"
+    private val lang: String = "en",
+    private val context: android.content.Context
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<PlaceDetailUiState>(PlaceDetailUiState.Loading)
@@ -38,7 +40,7 @@ class PlaceDetailViewModel(
 
             val entity = repository.getFavouriteById(favouriteId)
             if (entity == null) {
-                _uiState.value = PlaceDetailUiState.Error("Location not found")
+                _uiState.value = PlaceDetailUiState.Error(context.getString(R.string.location_not_found))
                 return@launch
             }
 
@@ -54,7 +56,9 @@ class PlaceDetailViewModel(
 
             if (currentResult.isFailure || forecastResult.isFailure) {
                 _uiState.value = PlaceDetailUiState.Error(
-                    currentResult.exceptionOrNull()?.message ?: forecastResult.exceptionOrNull()?.message ?: "Failed to load weather"
+                    currentResult.exceptionOrNull()?.message ?: forecastResult.exceptionOrNull()?.message ?: context.getString(
+                        R.string.failed_to_load_weather
+                    )
                 )
                 return@launch
             }
@@ -80,10 +84,11 @@ class PlaceDetailViewModel(
         private val favouriteId: Int,
         private val repository: WeatherRepositoryImp,
         private val units: String,
-        private val lang: String
+        private val lang: String,
+        private val context: android.content.Context
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            PlaceDetailViewModel(favouriteId, repository, units, lang) as T
+            PlaceDetailViewModel(favouriteId, repository, units, lang , context) as T
     }
 }

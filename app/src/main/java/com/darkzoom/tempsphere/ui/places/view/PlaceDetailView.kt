@@ -11,16 +11,18 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.data.local.model.ForecastTab
 import com.darkzoom.tempsphere.data.local.model.PlaceDetailData
 import com.darkzoom.tempsphere.ui.core.Theme.AppThemeColors
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
-import com.darkzoom.tempsphere.ui.home.components.GlassSection
-import com.darkzoom.tempsphere.ui.home.components.MainSection
+import com.darkzoom.tempsphere.ui.core.components.GlassSection
+import com.darkzoom.tempsphere.ui.core.components.MainSection
 import com.darkzoom.tempsphere.ui.places.viewmodel.PlaceDetailUiState
 import com.darkzoom.tempsphere.ui.places.viewmodel.PlaceDetailViewModel
 
@@ -110,7 +112,7 @@ private fun SuccessDetailContent(
                 IconButton(onClick = onBack) {
                     Icon(
                         imageVector = Icons.Rounded.ArrowBackIosNew,
-                        contentDescription = "Back",
+                        contentDescription = stringResource(R.string.back),
                         tint = theme.textPrimary.copy(alpha = 0.8f)
                     )
                 }
@@ -137,7 +139,8 @@ private fun SuccessDetailContent(
                 lowF = data.low,
                 description = data.description,
                 weatherType = data.weatherType,
-                dateLabel = data.dateLabel
+                dateLabel = data.dateLabel,
+                unitSymbol = data.unitSymbol
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -151,6 +154,8 @@ private fun SuccessDetailContent(
                 windMs = data.windMs.toFloat(),
                 pressureHpa = data.pressureHpa,
                 cloudinessPct = data.cloudinessPct,
+                unitSymbol = data.unitSymbol,
+                windUnit = data.windUnit,
                 modifier = Modifier.padding(horizontal = 12.dp)
             )
         }

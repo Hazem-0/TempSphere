@@ -17,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.darkzoom.tempsphere.R
 
 @Composable
 fun ExpandableRow(
@@ -33,7 +35,9 @@ fun ExpandableRow(
     modifier: Modifier = Modifier,
     isLast: Boolean = false
 ) {
-    val rotation by animateFloatAsState(targetValue = if (isOpen) 90f else 0f, label = "chevron_rotation")
+    val rotation by animateFloatAsState(targetValue = if (isOpen) 90f else 0f, label = stringResource(
+        R.string.chevron_rotation
+    ))
 
     Column(modifier = modifier) {
         SettingsRow(

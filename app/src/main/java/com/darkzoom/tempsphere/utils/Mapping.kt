@@ -1,11 +1,12 @@
 package com.darkzoom.tempsphere.utils
 
-import CurrentWeatherEntity
-import ForecastItemEntity
+
 import androidx.compose.ui.graphics.Color
 import com.darkzoom.tempsphere.data.local.model.*
 import com.darkzoom.tempsphere.data.local.model.entity.AlertEntity
+import com.darkzoom.tempsphere.data.local.model.entity.CurrentWeatherEntity
 import com.darkzoom.tempsphere.data.local.model.entity.FavLocationEntity
+import com.darkzoom.tempsphere.data.local.model.entity.ForecastItemEntity
 import com.darkzoom.tempsphere.data.remote.model.*
 import com.darkzoom.tempsphere.ui.home.HomeUiState
 import java.text.SimpleDateFormat
@@ -13,71 +14,50 @@ import java.util.Date
 import java.util.Locale
 
 fun CurrentWeatherResponse.toEntity(units: String, lang: String): CurrentWeatherEntity {
-    var mainWeatherType = ""
-    var weatherDesc = ""
-    var weatherIco = ""
-
-    if (this.weather.isNotEmpty()) {
-        val firstWeatherItem = this.weather[0]
-        mainWeatherType = firstWeatherItem.main
-        weatherDesc = firstWeatherItem.description
-        weatherIco = firstWeatherItem.icon
-    }
-
+    val firstWeather    = weather.firstOrNull()
     return CurrentWeatherEntity(
-        id = this.id,
-        lat = this.coord.lat,
-        lon = this.coord.lon,
-        cityName = this.name,
-        country = this.sys.country,
-        temp = this.main.temp,
-        feelsLike = this.main.feelsLike,
-        tempMin = this.main.tempMin,
-        tempMax = this.main.tempMax,
-        pressure = this.main.pressure,
-        humidity = this.main.humidity,
-        visibility = this.visibility,
-        windSpeed = this.wind.speed,
-        windDeg = this.wind.deg,
-        windGust = this.wind.gust,
-        cloudsAll = this.clouds.all,
-        weatherMain = mainWeatherType,
-        weatherDescription = weatherDesc,
-        weatherIcon = weatherIco,
-        sunrise = this.sys.sunrise,
-        sunset = this.sys.sunset,
-        dt = this.dt,
-        timezone = this.timezone,
-        units = units,
-        lang = lang
+        id                  = id,
+        lat                 = coord.lat,
+        lon                 = coord.lon,
+        cityName            = name,
+        country             = sys.country,
+        temp                = main.temp,
+        feelsLike           = main.feelsLike,
+        tempMin             = main.tempMin,
+        tempMax             = main.tempMax,
+        pressure            = main.pressure,
+        humidity            = main.humidity,
+        visibility          = visibility,
+        windSpeed           = wind.speed,
+        windDeg             = wind.deg,
+        windGust            = wind.gust,
+        cloudsAll           = clouds.all,
+        weatherMain         = firstWeather?.main         ?: "",
+        weatherDescription  = firstWeather?.description  ?: "",
+        weatherIcon         = firstWeather?.icon         ?: "",
+        sunrise             = sys.sunrise,
+        sunset              = sys.sunset,
+        dt                  = dt,
+        timezone            = timezone,
+        units               = units,
+        lang                = lang,
+
     )
 }
 
-fun ForecastResponse.toEntities(units: String, lang: String): List<ForecastItemEntity> {
-    val entityList = mutableListOf<ForecastItemEntity>()
-    for (item in this.list) {
-
-        var mainWeatherType = ""
-        var weatherDesc = ""
-        var weatherIco = ""
-
-        if (item.weather.isNotEmpty()) {
-            val firstWeatherItem = item.weather[0]
-            mainWeatherType = firstWeatherItem.main
-            weatherDesc = firstWeatherItem.description
-            weatherIco = firstWeatherItem.icon
-        }
-
-        val entity = ForecastItemEntity(
+fun ForecastResponse.toEntities(units: String, lang: String): List<ForecastItemEntity> =
+    list.map { item ->
+        val firstWeather = item.weather.firstOrNull()
+        ForecastItemEntity(
             dt = item.dt,
-            cityId = this.city.id,
-            cityName = this.city.name,
-            country = this.city.country,
-            cityLat = this.city.coord.lat,
-            cityLon = this.city.coord.lon,
-            cityTimezone = this.city.timezone,
-            citySunrise = this.city.sunrise,
-            citySunset = this.city.sunset,
+            cityId = city.id,
+            cityName = city.name,
+            country = city.country,
+            cityLat = city.coord.lat,
+            cityLon = city.coord.lon,
+            cityTimezone = city.timezone,
+            citySunrise = city.sunrise,
+            citySunset = city.sunset,
             temp = item.main.temp,
             feelsLike = item.main.feelsLike,
             tempMin = item.main.tempMin,
@@ -89,28 +69,23 @@ fun ForecastResponse.toEntities(units: String, lang: String): List<ForecastItemE
             windDeg = item.wind.deg,
             windGust = item.wind.gust,
             cloudsAll = item.clouds.all,
-            weatherMain = mainWeatherType,
-            weatherDescription = weatherDesc,
-            weatherIcon = weatherIco,
+            weatherMain = firstWeather?.main ?: "",
+            weatherDescription = firstWeather?.description ?: "",
+            weatherIcon = firstWeather?.icon ?: "",
             pop = item.pop,
             dtTxt = item.dtTxt,
             units = units,
             lang = lang
         )
-
-        entityList.add(entity)
     }
-
-    return entityList
-}
 
 fun CurrentWeatherEntity.toSuccess(forecast: List<ForecastItemEntity>) =
     HomeUiState.Success(
         city          = cityName,
-        temp         = temp.toInt(),
-        feelsLike    = feelsLike.toInt(),
-        high         = tempMax.toInt(),
-        low          = tempMin.toInt(),
+        temp          = temp.toInt(),
+        feelsLike     = feelsLike.toInt(),
+        high          = tempMax.toInt(),
+        low           = tempMin.toInt(),
         description   = weatherDescription.replaceFirstChar { it.uppercase() },
         weatherType   = weatherIcon.toWeatherType(),
         humidity      = humidity,
@@ -132,8 +107,8 @@ fun ForecastItemEntity.toHourly() = HourlyWeather(
 
 fun List<ForecastItemEntity>.toDaily() = DailyWeather(
     day       = first().dt.toDayLabel(),
-    high     = maxOf { it.tempMax }.toInt(),
-    low      = minOf { it.tempMin }.toInt(),
+    high      = maxOf { it.tempMax }.toInt(),
+    low       = minOf { it.tempMin }.toInt(),
     type      = first().weatherIcon.toWeatherType(),
     precipPct = (maxOf { it.pop } * 100).toInt()
 )
@@ -159,68 +134,18 @@ fun AlertModel.toEntity(): AlertEntity = AlertEntity(
 )
 
 fun String.toWeatherType(): WeatherType {
-    val isDay = this.endsWith('d')
-    return when (this.take(2)) {
-        "01" -> if (isDay) WeatherType.SUNNY else WeatherType.NIGHT
-        "02" -> if (isDay) WeatherType.PARTLY_CLOUDY else WeatherType.NIGHT
+    val isDay = endsWith('d')
+    return when (take(2)) {
+        "01"       -> if (isDay) WeatherType.SUNNY         else WeatherType.NIGHT
+        "02"       -> if (isDay) WeatherType.PARTLY_CLOUDY else WeatherType.NIGHT
         "03", "04" -> WeatherType.CLOUDY
         "09", "10" -> WeatherType.RAINY
-        "11" -> WeatherType.THUNDER
-        "13" -> WeatherType.SNOWY
-        "50" -> WeatherType.FOGGY
-        else -> WeatherType.CLOUDY
+        "11"       -> WeatherType.THUNDER
+        "13"       -> WeatherType.SNOWY
+        "50"       -> WeatherType.FOGGY
+        else       -> WeatherType.CLOUDY
     }
 }
-
-fun Long.toDateLabel() =
-    SimpleDateFormat("EEE, MMM d · h:mm a", Locale.getDefault()).format(Date(this * 1000))
-
-fun Long.toHourLabel() =
-    SimpleDateFormat("h a", Locale.getDefault()).format(Date(this * 1000))
-
-fun Long.toDayLabel() =
-    SimpleDateFormat("EEE", Locale.getDefault()).format(Date(this * 1000))
-
-fun String.toApiUnits()   = when (this) { "Celsius" -> "metric"; "Fahrenheit" -> "imperial"; else -> "standard" }
-fun String.toApiLang()    = when (this) { "Arabic"  -> "ar";     else -> "en" }
-fun String.toUnitSymbol() = when (this) { "metric"  -> "°C";     "imperial" -> "°F";         else -> " K" }
-
-fun CurrentWeatherResponse.toSavedLocation(entity: FavLocationEntity): SavedLocation {
-    val weatherIcon = weather.firstOrNull()?.icon ?: ""
-    val type = weatherIcon.toWeatherType()
-
-    return SavedLocation(
-        id = entity.id,
-        city = entity.city,
-        country = entity.country,
-        latitude = entity.latitude,
-        longitude = entity.longitude,
-        temp = main.temp.toInt(),
-        feelsLike = main.feelsLike.toInt(),
-        high = main.tempMax.toInt(),
-        low = main.tempMin.toInt(),
-        description = weather.firstOrNull()?.description?.replaceFirstChar { it.uppercase() } ?: "",
-        time = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date()),
-        type = type,
-        gradientColors = type.toGradientColors()
-    )
-}
-
-fun FavLocationEntity.toSkeleton() = SavedLocation(
-    id = id,
-    city = city,
-    country = country,
-    latitude = latitude,
-    longitude = longitude,
-    temp = 0,
-    feelsLike = 0,
-    high = 0,
-    low = 0,
-    description = "Loading…",
-    time = "--:--",
-    type = WeatherType.SUNNY,
-    gradientColors = listOf(Color(0xFF1E1B4B), Color(0xFF312E81))
-)
 
 fun WeatherType.toGradientColors(): List<Color> = when (this) {
     WeatherType.SUNNY         -> listOf(Color(0xFF1E6F3A), Color(0xFF124A24))
@@ -232,18 +157,108 @@ fun WeatherType.toGradientColors(): List<Color> = when (this) {
     else                      -> listOf(Color(0xFF1E1B4B), Color(0xFF312E81))
 }
 
+fun Long.toDateLabel(): String =
+    SimpleDateFormat("EEE, MMM d · h:mm a", Locale.getDefault())
+        .format(Date(this * 1000))
+
+fun Long.toHourLabel(): String =
+    SimpleDateFormat("h a", Locale.getDefault())
+        .format(Date(this * 1000))
+
+fun Long.toDayLabel(): String =
+    SimpleDateFormat("EEE", Locale.getDefault())
+        .format(Date(this * 1000))
+
+
+
+fun Double.toDisplayWindSpeed(windUnit: String): String = when (windUnit) {
+    "km/h" -> "%.1f km/h".format(this * 3.6)
+    "mph"  -> "%.1f mph".format(this * 2.237)
+    else   -> "%.1f m/s".format(this)
+}
+
+fun CurrentWeatherResponse.toSavedLocation(entity: FavLocationEntity): SavedLocation {
+    val type = (weather.firstOrNull()?.icon ?: "").toWeatherType()
+    return SavedLocation(
+        id             = entity.id,
+        city           = entity.city,
+        country        = entity.country,
+        latitude       = entity.latitude,
+        longitude      = entity.longitude,
+        temp           = main.temp.toInt(),
+        feelsLike      = main.feelsLike.toInt(),
+        high           = main.tempMax.toInt(),
+        low            = main.tempMin.toInt(),
+        description    = weather.firstOrNull()?.description
+            ?.replaceFirstChar { it.uppercase() } ?: "",
+        time           = SimpleDateFormat("h:mm a", Locale.getDefault()).format(Date()),
+        type           = type,
+        gradientColors = type.toGradientColors()
+    )
+}
+
+fun FavLocationEntity.toCachedSavedLocation(): SavedLocation {
+    val type = cachedWeatherTypeString?.let { WeatherType.valueOf(it) } ?: WeatherType.SUNNY
+    return SavedLocation(
+        id             = id,
+        city           = city,
+        country        = country,
+        latitude       = latitude,
+        longitude      = longitude,
+        temp           = cachedTemp      ?: 0,
+        feelsLike      = cachedFeelsLike ?: 0,
+        high           = cachedHigh      ?: 0,
+        low            = cachedLow       ?: 0,
+        description    = cachedDescription
+            ?: if (cachedTemp == null) "Loading…" else "Offline",
+        time           = lastUpdated?.toHourLabel() ?: "--:--",
+        type           = type,
+        gradientColors = type.toGradientColors()
+    )
+}
+
+fun FavLocationEntity.updateWith(response: CurrentWeatherResponse): FavLocationEntity {
+    val type = (response.weather.firstOrNull()?.icon ?: "").toWeatherType()
+    return copy(
+        cachedTemp               = response.main.temp.toInt(),
+        cachedFeelsLike          = response.main.feelsLike.toInt(),
+        cachedHigh               = response.main.tempMax.toInt(),
+        cachedLow                = response.main.tempMin.toInt(),
+        cachedDescription        = response.weather.firstOrNull()
+            ?.description?.replaceFirstChar { it.uppercase() },
+        cachedWeatherTypeString  = type.name,
+        lastUpdated              = System.currentTimeMillis() / 1000
+    )
+}
+
+fun FavLocationEntity.toSkeleton() = SavedLocation(
+    id             = id,
+    city           = city,
+    country        = country,
+    latitude       = latitude,
+    longitude      = longitude,
+    temp           = 0,
+    feelsLike      = 0,
+    high           = 0,
+    low            = 0,
+    description    = "Loading…",
+    time           = "--:--",
+    type           = WeatherType.SUNNY,
+    gradientColors = listOf(Color(0xFF1E1B4B), Color(0xFF312E81))
+)
+
 fun CurrentWeatherResponse.toPlaceDetailData(
-    city: String,
-    country: String,
+    city    : String,
+    country : String,
     forecast: ForecastResponse
 ): PlaceDetailData {
     val weatherIcon = weather.firstOrNull()?.icon ?: ""
 
     val hourlyItems = forecast.list.take(8).map { slot ->
         HourlyWeather(
-            time = slot.dt.toHourLabel(),
-            tempF = slot.main.temp.toInt(),
-            type = slot.weather.firstOrNull()?.icon?.toWeatherType() ?: WeatherType.SUNNY,
+            time      = slot.dt.toHourLabel(),
+            tempF     = slot.main.temp.toInt(),
+            type      = slot.weather.firstOrNull()?.icon?.toWeatherType() ?: WeatherType.SUNNY,
             precipPct = (slot.pop * 100).toInt()
         )
     }
@@ -254,64 +269,49 @@ fun CurrentWeatherResponse.toPlaceDetailData(
         .take(5)
         .map { (dayLabel, slots) ->
             DailyWeather(
-                day = dayLabel,
-                high = slots.maxOf { it.main.tempMax.toInt() },
-                low = slots.minOf { it.main.tempMin.toInt() },
-                type = slots[slots.size / 2].weather.firstOrNull()?.icon?.toWeatherType() ?: WeatherType.SUNNY,
+                day       = dayLabel,
+                high      = slots.maxOf { it.main.tempMax.toInt() },
+                low       = slots.minOf { it.main.tempMin.toInt() },
+                type      = slots[slots.size / 2].weather.firstOrNull()
+                    ?.icon?.toWeatherType() ?: WeatherType.SUNNY,
                 precipPct = (slots.maxOf { it.pop } * 100).toInt()
             )
         }
 
     return PlaceDetailData(
-        city = city,
-        country = country,
-        temp = main.temp.toInt(),
-        feelsLike = main.feelsLike.toInt(),
-        high = main.tempMax.toInt(),
-        low = main.tempMin.toInt(),
-        description = weather.firstOrNull()?.description?.replaceFirstChar { it.uppercase() } ?: "",
-        humidity = main.humidity,
-        windMs = wind.speed,
-        pressureHpa = main.pressure,
+        city          = city,
+        country       = country,
+        temp          = main.temp.toInt(),
+        feelsLike     = main.feelsLike.toInt(),
+        high          = main.tempMax.toInt(),
+        low           = main.tempMin.toInt(),
+        description   = weather.firstOrNull()?.description
+            ?.replaceFirstChar { it.uppercase() } ?: "",
+        humidity      = main.humidity,
+        windMs        = wind.speed,
+        pressureHpa   = main.pressure,
         cloudinessPct = clouds.all,
-        weatherType = weatherIcon.toWeatherType(),
-        hourly = hourlyItems,
-        daily = dailyItems,
-        dateLabel = dt.toDateLabel(),
-        isRefreshing = false
+        weatherType   = weatherIcon.toWeatherType(),
+        hourly        = hourlyItems,
+        daily         = dailyItems,
+        dateLabel     = dt.toDateLabel(),
+        isRefreshing  = false
     )
 }
 
-fun FavLocationEntity.toCachedSavedLocation(): SavedLocation {
-    val type = cachedWeatherTypeString?.let { WeatherType.valueOf(it) } ?: WeatherType.SUNNY
-    return SavedLocation(
-        id = id,
-        city = city,
-        country = country,
-        latitude = latitude,
-        longitude = longitude,
-        temp = cachedTemp ?: 0,
-        feelsLike = cachedFeelsLike ?: 0,
-        high = cachedHigh ?: 0,
-        low = cachedLow ?: 0,
-        description = cachedDescription ?: if (cachedTemp == null) "Loading…" else "Offline",
-        time = lastUpdated?.toHourLabel() ?: "--:--",
-        type = type,
-        gradientColors = type.toGradientColors()
-    )
+ fun String.toApiUnits() = when (this) {
+    "Celsius"    -> "metric"
+    "Fahrenheit" -> "imperial"
+    else         -> "standard"
 }
 
-fun FavLocationEntity.updateWith(response: CurrentWeatherResponse): FavLocationEntity {
-    val weatherIcon = response.weather.firstOrNull()?.icon ?: ""
-    val type = weatherIcon.toWeatherType()
+ fun String.toApiLang() = when (this) {
+    "Arabic" -> "ar"
+    else     -> "en"
+}
 
-    return this.copy(
-        cachedTemp = response.main.temp.toInt(),
-        cachedFeelsLike = response.main.feelsLike.toInt(),
-        cachedHigh = response.main.tempMax.toInt(),
-        cachedLow = response.main.tempMin.toInt(),
-        cachedDescription = response.weather.firstOrNull()?.description?.replaceFirstChar { it.uppercase() },
-        cachedWeatherTypeString = type.name,
-        lastUpdated = System.currentTimeMillis() / 1000
-    )
+ fun String.toUnitSymbol() = when (this) {
+    "Celsius"    -> "°C"
+    "Fahrenheit" -> "°F"
+    else         -> "K"
 }

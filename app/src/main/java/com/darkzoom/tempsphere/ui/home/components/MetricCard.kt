@@ -18,10 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.darkzoom.tempsphere.R
 import com.darkzoom.tempsphere.ui.core.Theme.LocalAppTheme
+import com.darkzoom.tempsphere.utils.toDisplayWindSpeed
 
 private data class MetricTileData(
     val label: String,
@@ -36,18 +39,21 @@ fun MetricCard(
     windMs: Float,
     pressureHpa: Int,
     cloudinessPct: Int,
+    windUnit: String,
     modifier: Modifier = Modifier
 ) {
     val colors = LocalAppTheme.current
     val tiles = listOf(
-        MetricTileData("Humidity",   "$humidity%",       Icons.Rounded.WaterDrop, colors.humidityIcon),
-        MetricTileData("Wind",       "$windMs m/s",      Icons.Rounded.Air,       colors.windIcon),
-        MetricTileData("Pressure",   "$pressureHpa hPa", Icons.Rounded.Compress,  colors.pressureIcon),
-        MetricTileData("Cloudiness", "$cloudinessPct%",  Icons.Rounded.Cloud,     colors.cloudIcon),
+        MetricTileData(stringResource(R.string.humidity),   "$humidity%",       Icons.Rounded.WaterDrop, colors.humidityIcon),
+        MetricTileData(stringResource(R.string.wind),       windMs.toDouble().toDisplayWindSpeed(windUnit), Icons.Rounded.Air, colors.windIcon),
+        MetricTileData(stringResource(R.string.pressure),   "$pressureHpa hPa", Icons.Rounded.Compress,  colors.pressureIcon),
+        MetricTileData(stringResource(R.string.cloudiness), "$cloudinessPct%",  Icons.Rounded.Cloud,     colors.cloudIcon),
     )
 
     Row(
-        modifier = modifier.fillMaxWidth().padding(16.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {

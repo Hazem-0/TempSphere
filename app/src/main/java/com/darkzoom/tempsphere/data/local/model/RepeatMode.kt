@@ -1,5 +1,8 @@
 package com.darkzoom.tempsphere.data.local.model
 
+import android.content.Context
+import com.darkzoom.tempsphere.R
+
 
 enum class RepeatMode {
 
@@ -9,9 +12,9 @@ enum class RepeatMode {
 
     fun toStorageString(): String = name
 
-    fun displayLabel(): String = when (this) {
-        ONCE     -> "Once"
-        DAILY    -> "Every day"
+    fun displayLabel(context: Context): String = when (this) {
+        ONCE     -> context.getString(R.string.once)
+        DAILY    -> context.getString(R.string.every_day)
 
     }
 
